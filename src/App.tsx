@@ -1,17 +1,14 @@
-import { useState } from "react";
-import style from "./App.module.css";
+import MapComponent from "./components/Map/Map";
+import Nav from "./components/Nav/Nav";
+
+import style from "./App.module.scss";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <>
-      <div className={style.card}>
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-      </div>
-    </>
+    <section className={style.app}>
+      <Nav />
+      <MapComponent />
+    </section>
   );
 }
 
