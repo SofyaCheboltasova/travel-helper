@@ -1,11 +1,11 @@
 enum ButtonColor {
-  "light",
-  "dark",
+  light = "light",
+  dark = "dark",
 }
 
 enum ButtonState {
-  "enabled",
-  "disabled",
+  enabled = "enabled",
+  disabled = "disabled",
 }
 
 export { ButtonColor, ButtonState };
