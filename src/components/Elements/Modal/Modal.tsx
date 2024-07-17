@@ -6,9 +6,9 @@ export default function Modal({ data }: { data: ChannelData }) {
 
   return (
     <a href={name} target="_blank">
-      <div className={style.closed}>
+      <div className={style.modal}>
         <h2 className={style.header}>{title}</h2>
-        <p>{description}</p>
+        <p className={style.description}>{description}</p>
         <div className={style.label}>{theme}</div>
       </div>
     </a>
