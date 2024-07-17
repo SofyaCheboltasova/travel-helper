@@ -35,7 +35,7 @@ export default class TelegramApi {
 
     const { id, title, description } = channelData;
     const { theme, name } = resourceData;
-    const channelLink = `t.me/${name}`;
+    const channelLink = `https://t.me/${name}`;
 
     const returnData: ChannelData = {
       id: id,

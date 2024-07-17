@@ -5,7 +5,7 @@ export default function Modal({ data }: { data: ChannelData }) {
   const { title, theme, name, description } = data;
 
   return (
-    <a href={name}>
+    <a href={name} target="_blank">
       <div className={style.closed}>
         <h2 className={style.header}>{title}</h2>
         <p>{description}</p>
