@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import resources from "../../assets/json/resources.json";
+import resources from "../../../assets/json/resources.json";
 import style from "./ResourcesPage.module.scss";
 
-import Modal from "../Modals/Modal";
-import ChannelData from "../../utils/interfaces/ChannelData";
-import TelegramApi from "../../api/TelegramApi";
+import Modal from "../../Elements/Modal/Modal";
+import ChannelData from "../../../utils/interfaces/ChannelData";
+import TelegramApi from "../../../api/TelegramApi";
 
 const ResourcesPage = React.memo(() => {
   const [channelData, setChannelData] = useState<ChannelData[]>([]);

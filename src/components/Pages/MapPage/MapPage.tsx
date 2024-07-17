@@ -2,7 +2,7 @@ import { load } from "@2gis/mapgl";
 import { Map } from "@2gis/mapgl/types";
 import { memo, useEffect } from "react";
 
-import style from "./Map.module.scss";
+import style from "./MapPage.module.scss";
 
 const MapWrapper = memo(() => {
   return <div id="map-container" className={style.map}></div>;
@@ -25,7 +25,7 @@ TODO:
 - Карта на всю ширину экрана
 
 */
-export default function MapComponent() {
+export default function MapPage() {
   const API_KEY = "-";
 
   useEffect(() => {

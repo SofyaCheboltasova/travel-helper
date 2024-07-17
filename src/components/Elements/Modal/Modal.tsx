@@ -1,4 +1,4 @@
-import ChannelData from "../../utils/interfaces/ChannelData";
+import ChannelData from "../../../utils/interfaces/ChannelData";
 import style from "./Modal.module.scss";
 
 export default function Modal({ data }: { data: ChannelData }) {

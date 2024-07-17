@@ -2,7 +2,7 @@ import { useNavigate } from "react-router";
 
 import style from "./Nav.module.scss";
 import Button from "../Button/Button";
-import { pages } from "../../assets/consts/pages";
+import { pages } from "../../../assets/consts/pages";
 
 export default function Nav() {
   const navigate = useNavigate();
