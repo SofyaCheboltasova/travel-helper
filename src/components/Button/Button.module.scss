@@ -7,6 +7,8 @@
   border-radius: 16px;
   box-shadow: $box-shadow-default;
 
+  transition: box-shadow 0.5 ease-in-out;
+
   &.light {
     background-color: $color-main;
     color: $text-main-color;
@@ -17,8 +19,11 @@
     color: $text-main-color;
   }
 
-  &:hover {
+  &:hover,
+  &:focus,
+  &:focus-within {
     border-color: $color-secondary;
+    box-shadow: none;
   }
 }
 

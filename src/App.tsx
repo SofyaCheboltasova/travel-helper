@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import style from "./App.module.scss";
-import MapComponent from "./components/Map/Map";
-import Nav from "./components/Nav/Nav";
 import { pages } from "./assets/consts/pages";
+import Nav from "./components/Nav/Nav";
 import Main from "./components/Main/Main";
+import MapComponent from "./components/Map/Map";
 
 function App() {
   return (
