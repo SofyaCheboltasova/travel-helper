@@ -4,7 +4,7 @@ import style from "./App.module.scss";
 import { pages } from "./assets/consts/pages";
 import Nav from "./components/Nav/Nav";
 import Main from "./components/Main/Main";
-import MapComponent from "./components/Map/Map";
+import MapComponent from "./components/MapComponent/MapComponent";
 
 function App() {
   return (

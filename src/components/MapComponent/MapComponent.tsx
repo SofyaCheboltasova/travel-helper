@@ -5,11 +5,27 @@ import { memo, useEffect } from "react";
 import style from "./Map.module.scss";
 
 const MapWrapper = memo(() => {
-  return <div id="map-container" className={style.mapWrapper}></div>;
+  return <div id="map-container" className={style.map}></div>;
 });
 
+/*
+TODO: 
+- Строка поиска
+- Определение местоположения
+- Кнопка сохранить:
+	- Модалка: название
+
+МЕТКИ:
+- Добавление метки: 
+	- Изменение значка
+	- Добавление названия
+	- Добавление note
+	- Сохранение меток
+
+- Карта на всю ширину экрана
+
+*/
 export default function MapComponent() {
-  // const API_KEY = "32638050-486e-4b6c-8a1a-600e7fd4b48d";
   const API_KEY = "-";
 
   useEffect(() => {
