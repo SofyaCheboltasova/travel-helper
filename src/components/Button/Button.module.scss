@@ -1,29 +1,17 @@
-@import "../../assets/styles/colors.module.scss";
+@import "../../assets/styles/consts.module.scss";
+@import "../../assets/styles/common.module.scss";
 
 .button {
-  width: 100%;
-  padding: 1rem;
+  @extend %base-rectangle;
+  font: $font-main-medium;
 
-  border-radius: 16px;
-  box-shadow: $box-shadow-default;
-
-  transition: box-shadow 0.5 ease-in-out;
+  &:hover,
+  &:focus-visible {
+    border: solid 1px $color-secondary;
+  }
 
   &.light {
     background-color: $color-main;
-    color: $text-main-color;
-  }
-
-  &.disabled {
-    background-color: $button-disabled;
-    color: $text-main-color;
-  }
-
-  &:hover,
-  &:focus,
-  &:focus-within {
-    border-color: $color-secondary;
-    box-shadow: none;
   }
 }
 
