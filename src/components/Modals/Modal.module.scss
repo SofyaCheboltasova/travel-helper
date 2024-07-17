@@ -1,0 +1,13 @@
+@import "../../assets/styles/common.module.scss";
+
+.closed {
+  @extend %base-rectangle;
+
+  display: grid;
+  grid-template-rows: 2fr, 1fr, 1fr;
+  row-gap: 10px 5px;
+
+  width: 100%;
+  height: 100%;
+}
+
