@@ -5,6 +5,7 @@ import { pages } from "./assets/consts/pages";
 import Nav from "./components/Nav/Nav";
 import Main from "./components/Main/Main";
 import MapComponent from "./components/MapComponent/MapComponent";
+import SearchBar from "./components/SearchBar/SearchBar";
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
           />
           <Route
             path={pages.tickets.path}
-            element={<Main children={<MapComponent />} />}
+            element={<Main children={<SearchBar />} />}
           />
         </Routes>
       </section>
