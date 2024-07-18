@@ -4,8 +4,8 @@ import { memo, useEffect } from "react";
 
 import style from "./MapPage.module.scss";
 
-const MapWrapper = memo(() => {
-  return <div id="map-container" className={style.map}></div>;
+const MapContent = memo(() => {
+  return <div id="map-container" className={style.map__content}></div>;
 });
 
 /*
@@ -43,8 +43,8 @@ export default function MapPage() {
   }, []);
 
   return (
-    <div className={style.map}>
-      <MapWrapper />
+    <div className={style.map__wrapper}>
+      <MapContent />
     </div>
   );
 }
