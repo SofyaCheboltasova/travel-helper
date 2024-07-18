@@ -1,53 +1,43 @@
-@import "../../../assets/styles/common.module.scss";
+@import "../../../assets/styles/mixins.module.scss";
+@import "../../../assets/styles/placeholders.module.scss";
 
 .modal {
-  @extend %base-rectangle;
+  &__header,
+  &__description {
+    @extend %text-ellipsis;
+  }
 
-  display: flex;
-  gap: 1rem;
-  flex-direction: column;
-  justify-content: space-between;
+  &__header {
+    margin: 0;
+    -webkit-line-clamp: 1;
+  }
 
-  width: 100%;
-  height: 100%;
+  &__description {
+    -webkit-line-clamp: 4;
+  }
+}
+
+.modal__wrapper {
+  @extend %rectangle-default;
+  @include size(100%, 100%);
+  @include flex(column, 1rem, space-between);
+
+  transition: $transition-scale;
 
   &:hover,
   &:focus-visible {
-    border: solid 1px $color-secondary;
-    transform: scale(1.01);
-    transition: transform 0.4s ease-out;
+    @include borders($box-border-hover);
+    transform: $transform-scale-hover;
   }
 
   &:not(:hover) {
-    transform: scale(1);
-    transition: transform 0.4s ease-out;
+    transform: $transform-scale-default;
   }
 }
 
-.header {
-  margin: 0;
-
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-}
-
-.description {
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-}
-
-.label {
-  font-style: italic;
-  font-weight: 600;
-  color: $color-main;
+.modal__label {
+  font: $font-italic-bold;
+  color: $color-font-light;
 
   display: inline-block;
   position: relative;
@@ -55,14 +45,14 @@
 
   &::before {
     content: "";
+    @include size(40%, 130%);
+
     position: absolute;
+    z-index: -1;
     top: 50%;
     left: 50%;
-    width: 40%;
-    height: 130%;
-    background-color: $font-main-color;
+    background-color: $color-font-dark;
     transform: translate(-50%, -50%) skew(333deg);
-    z-index: -1;
   }
 }
 
