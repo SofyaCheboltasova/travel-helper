@@ -3,11 +3,11 @@
 
 .header {
   @include size(100%, fit-content);
-  @include offsets(1rem);
 
   position: sticky;
   top: 0;
   left: 0;
+  z-index: 1;
 
   background-color: $color-main;
 }

@@ -1,15 +1,10 @@
-import { ReactNode } from "react";
+import { ReactElement } from "react";
 
 import styles from "./Main.module.scss";
-import Header from "../Header/Header";
-import SearchBar from "../SearchBar/SearchBar";
 
-export default function Main({ children }: { children?: ReactNode }) {
+export default function Main({ children }: { children?: ReactElement }) {
   return children ? (
-    <section className={styles.main}>
-      <Header children={<SearchBar />} />
-      {children}
-    </section>
+    <section className={styles.main}>{children}</section>
   ) : (
     <section className={styles.main}>
       <h1>Welcome to Travel Helper!</h1>
