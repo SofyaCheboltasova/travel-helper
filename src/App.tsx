@@ -6,6 +6,7 @@ import Nav from "./components/Elements/Nav/Nav";
 import Main from "./components/Elements/Main/Main";
 import MapComponent from "./components/Pages/MapPage/MapPage";
 import ResourcesPage from "./components/Pages/ResourcesPage/ResourcesPage";
+import WelcomePage from "./components/Pages/WelcomePage/WelcomePage";
 
 function App() {
   return (
@@ -13,7 +14,10 @@ function App() {
       <section className={style.app}>
         <Nav />
         <Routes>
-          <Route path={pages.home.path} element={<Main />} />
+          <Route
+            path={pages.home.path}
+            element={<Main children={<WelcomePage />} />}
+          />
           <Route
             path={pages.newRoute.path}
             element={<Main children={<MapComponent />} />}
