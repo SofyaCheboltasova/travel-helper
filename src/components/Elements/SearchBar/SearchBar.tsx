@@ -1,45 +1,26 @@
-import React, { useState, useRef } from "react";
+import React from "react";
 
 import style from "./SearchBar.module.scss";
 
-export default function SearchBar() {
-  const [inputValue, setInputValue] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
-
+export default function SearchBar({
+  onChange,
+}: {
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}) {
   const pattern: string = "^@[a-zA-Z0-9_]{5,32}$";
-  const placeholder: string = "@channelName";
-
-  const handleFocus = () => {
-    if (!inputValue && inputRef.current) {
-      setInputValue("@");
-      inputRef.current.setSelectionRange(1, 1);
-    }
-  };
-
-  const handleBlur = () => {
-    if (inputValue === "@") {
-      setInputValue("");
-    }
-  };
+  const placeholder: string = "Поиск TG канала по названию, описанию или теме";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.startsWith("@")
-      ? e.target.value
-      : "@" + e.target.value;
-
-    setInputValue(value);
+    e.target.value = e.target.value[0].toUpperCase() + e.target.value.slice(1);
+    onChange(e);
   };
 
   return (
     <input
-      ref={inputRef}
       type="search"
       pattern={pattern}
-      value={inputValue}
       placeholder={placeholder}
       className={style.searchBar}
-      onBlur={handleBlur}
-      onFocus={handleFocus}
       onChange={handleChange}
     />
   );
