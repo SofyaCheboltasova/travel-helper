@@ -1,47 +1,51 @@
 [
   {
-    "theme": "Tickets",
+    "theme": "Билеты",
     "name": "vandroukiru"
   },
   {
-    "theme": "Tickets",
+    "theme": "Билеты",
     "name": "TicketsTurkey"
   },
   {
-    "theme": "Tours",
+    "theme": "Туры",
     "name": "travelata"
   },
   {
-    "theme": "Tours",
+    "theme": "Туры",
     "name": "vandroukitours"
   },
   {
-    "theme": "Tours",
+    "theme": "Туры",
     "name": "travelbelka"
   },
   {
-    "theme": "Tickets",
+    "theme": "Билеты",
     "name": "samokatus"
   },
   {
-    "theme": "Travellers chat",
+    "theme": "Попутчики",
     "name": "levshinachat"
   },
   {
-    "theme": "Lifehacks",
+    "theme": "Лайфхаки",
     "name": "travellevshina"
   },
   {
-    "theme": "Travel guides",
+    "theme": "Путеводители",
     "name": "kaktudapopast"
   },
   {
-    "theme": "Lifehacks",
+    "theme": "Лайфхаки",
     "name": "saxapo4ekme"
   },
   {
-    "theme": "Hotels",
+    "theme": "Жилье",
     "name": "gdetamhotel"
+  },
+  {
+    "theme": "Туры",
+    "name": "leveltravel"
   }
 ]
 

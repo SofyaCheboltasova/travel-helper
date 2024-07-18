@@ -1,7 +1,7 @@
-import ChannelData from "../../../utils/interfaces/ChannelData";
+import ModalProps from "../../../utils/interfaces/ModalProps";
 import style from "./Modal.module.scss";
 
-export default function Modal({ data }: { data: ChannelData }) {
+export default function Modal({ data }: { data: ModalProps }) {
   const { title, theme, name, description } = data;
 
   return (
