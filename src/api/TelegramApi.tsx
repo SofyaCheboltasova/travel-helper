@@ -7,7 +7,7 @@ export default class TelegramApi {
   private url: string = "https://api.telegram.org";
 
   constructor() {
-    this.botToken = "bot7325241020:AAHBaH_F65BK3TMYFJ6-IiFBvNndQyyCX54";
+    this.botToken = `bot${import.meta.env.VITE_TELEGRAM_TOKEN}`;
     this.queryString = `${this.url}/${this.botToken}`;
   }
 
