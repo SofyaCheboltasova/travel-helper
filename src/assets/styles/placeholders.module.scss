@@ -1,0 +1,23 @@
+@import "./consts.module.scss";
+@import "./mixins.module.scss";
+
+%rectangle-default {
+  @include size(100%);
+  @include borders();
+  @include offsets(1rem);
+
+  box-shadow: $box-shadow-default;
+  transition: border-color 0.25s, outline-color 0.25s;
+
+  cursor: pointer;
+  color: $color-font-dark;
+  font: $font-main-regular;
+}
+
+%text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+

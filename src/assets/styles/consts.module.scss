@@ -3,11 +3,17 @@ $color-secondary: #006e0c;
 
 $box-shadow-default: 4px 8px 20px 3px rgb(13 13 13 / 22%);
 $box-border-default: 1px solid transparent;
-$box-border-colored: 1px solid $color-secondary;
+$box-border-hover: 1px solid $color-secondary;
 $box-radius: 16px;
 
 $font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-$font-main-color: #003366;
+$color-font-dark: #003366;
+$color-font-light: $color-main;
 $font-main-medium: 500 1em $font-family;
 $font-main-regular: 400 1em $font-family;
+$font-italic-bold: italic 600 1em $font-family;
+
+$transition-scale: transform 0.4s ease-out;
+$transform-scale-hover: scale(1.01);
+$transform-scale-default: scale(1);
 
