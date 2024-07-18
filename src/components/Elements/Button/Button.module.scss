@@ -1,13 +1,13 @@
 @import "../../../assets/styles/consts.module.scss";
-@import "../../../assets/styles/common.module.scss";
+@import "../../../assets/styles/placeholders.module.scss";
 
 .button {
-  @extend %base-rectangle;
+  @extend %rectangle-default;
   font: $font-main-medium;
 
   &:hover,
   &:focus-visible {
-    border: solid 1px $color-secondary;
+    border: $box-border-hover;
   }
 
   &.light {

@@ -1,11 +1,10 @@
-@import "../../../assets/styles/consts.module.scss";
-.main {
-  border-radius: 16px;
-  background-color: $color-main;
-  width: 100%;
-  max-height: 100vh;
+@import "../../../assets/styles/mixins.module.scss";
 
-  display: flex;
-  flex-direction: column;
+.main {
+  @include size(100%, $max-h: 100vh);
+  @include flex(column);
+  @include borders();
+
+  background-color: $color-main;
 }
 

@@ -1,13 +1,14 @@
+@import "./assets/styles/mixins.module.scss";
+
 #root {
-  margin: 0 auto;
-  padding: 2rem;
-  max-width: 1280px;
+  @include size($max-w: 1280px);
+  @include offsets(2rem, 0 auto);
   text-align: center;
 }
 .app {
+  @include size(100vw);
   display: grid;
   grid-template-columns: 1fr 3fr;
   column-gap: 2rem;
-  width: 100vw;
 }
 

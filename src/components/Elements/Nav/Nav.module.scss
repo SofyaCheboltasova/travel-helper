@@ -1,15 +1,13 @@
 @import "../../../assets/styles/consts.module.scss";
-.nav {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+@import "../../../assets/styles/mixins.module.scss";
 
-  border-right: $box-border-colored;
+.nav {
+  @include size(100%, 100vh);
+  @include offsets(2rem);
+  @include flex(column, 2rem);
+
+  border-right: $box-border-hover;
   box-shadow: $box-shadow-default;
   background-color: $color-main;
-
-  padding: 2rem;
-  width: 100%;
-  height: 100vh;
 }
 

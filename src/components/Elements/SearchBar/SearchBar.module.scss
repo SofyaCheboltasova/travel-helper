@@ -1,9 +1,10 @@
 @import "../../../assets/styles/consts.module.scss";
-@import "../../../assets/styles/common.module.scss";
+@import "../../../assets/styles/mixins.module.scss";
+@import "../../../assets/styles/placeholders.module.scss";
 
 .searchBar {
-  @extend %base-rectangle;
-  border: none;
+  @extend %rectangle-default;
+  @include borders(none);
 
   &:hover,
   &:focus-visible {
