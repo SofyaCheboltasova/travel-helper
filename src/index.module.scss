@@ -1,5 +1,9 @@
+@import "./assets/styles/consts.module.scss";
+
 * {
   box-sizing: border-box;
+  font-family: $font-family;
+  color: $color-font-dark;
 }
 
 :root {
@@ -43,7 +47,7 @@ li {
 }
 
 h1 {
-  font-size: 3.2em;
+  font-size: 2.5em;
   line-height: 1.1;
 }
 

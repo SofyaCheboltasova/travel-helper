@@ -45,7 +45,7 @@
 
   &::before {
     content: "";
-    @include size(40%, 130%);
+    @include size(50%, 130%);
 
     position: absolute;
     z-index: -1;

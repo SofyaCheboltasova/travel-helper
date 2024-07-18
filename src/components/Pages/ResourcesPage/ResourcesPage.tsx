@@ -64,7 +64,7 @@ export default function ResourcesPage() {
   };
 
   if (isLoading) {
-    return <div>Loading resources...</div>;
+    return <h2 className={style.loader}>Загружаем каналы...</h2>;
   }
 
   const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
