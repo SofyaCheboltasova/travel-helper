@@ -5,7 +5,7 @@ import style from "./ResourcesPage.module.scss";
 
 import Modal from "../../Elements/Modal/Modal";
 import ChannelData from "../../../utils/interfaces/ChannelData";
-import TelegramApi from "../../../api/TelegramApi";
+import TelegramApi from "../../api/TelegramApi";
 
 const ResourcesPage = React.memo(() => {
   const [channelData, setChannelData] = useState<ChannelData[]>([]);

@@ -1,5 +1,5 @@
-import ChannelData from "../utils/interfaces/ChannelData";
-import ResourceData from "../utils/interfaces/ResourceData";
+import ChannelData from "../../utils/interfaces/ChannelData";
+import ResourceData from "../../utils/interfaces/ResourceData";
 
 export default class TelegramApi {
   private botToken: string;
