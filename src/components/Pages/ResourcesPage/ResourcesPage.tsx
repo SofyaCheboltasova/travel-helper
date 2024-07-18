@@ -38,8 +38,8 @@ const ResourcesPage = React.memo(() => {
   }
 
   return (
-    <div className={style.content}>
-      <ul className={style.list}>
+    <div className={style.resources__wrapper}>
+      <ul className={style.resources__list}>
         {channelData.map((data) => (
           <li key={data.id}>
             <Modal data={data} />
