@@ -2,40 +2,50 @@ import { useEffect, useState } from "react";
 import OpenTripMapApi from "../../api/OpenTripMapApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/types";
-import { RadiusResponse } from "../../../utils/interfaces/OpenTripMapApi/QueryRadius";
-// import List from "../../Elements/List/List";
+import { PlaceResponse } from "../../../utils/interfaces/OpenTripMapApi/QueryPlace";
+import List from "../../Elements/List/List";
+import ModalProps from "../../../utils/interfaces/ModalProps";
 
 export default function PlacesList() {
   const { lon, lat } = useSelector((state: RootState) => state.search);
-  const [, setIsLoading] = useState(true);
-  const [places, setPlaces] = useState<RadiusResponse[]>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [places, setPlaces] = useState<ModalProps[]>();
 
-  /*
-		НУЖЕН ЛИ USEEFFECT?
+  const api = new OpenTripMapApi();
 
-		Места в радиусе
-	*/
   useEffect(() => {
-    const api = new OpenTripMapApi();
     async function fetchPlacesInRadius() {
       setIsLoading(true);
       try {
-        const places = await api.getPlacesInRadius(lon, lat);
-
-        setPlaces(places);
+        const places: PlaceResponse[] = await api.getPlacesInRadius(lon, lat);
+        const placesData: ModalProps[] = places.map((p) => setModalProps(p));
+        setPlaces(placesData);
       } catch (error) {
-        console.error("Error fetching places data");
+        console.error("Error fetching places data", error);
       } finally {
         setIsLoading(false);
       }
     }
-    fetchPlacesInRadius();
-  }, []);
 
-  useEffect(() => {}, [places]);
+    if (lon && lat) fetchPlacesInRadius();
+  }, [lon, lat]);
 
-  // return (
-  // 	<List elements={places}/>
-  // )
+  const setModalProps = (place: PlaceResponse): ModalProps => {
+    const { xid, name, info, wikipedia, kinds, image } = place;
+    return {
+      id: xid,
+      title: name,
+      description: info.descr || "Описание отсутствует",
+      link: wikipedia,
+      theme: kinds,
+      image: image || "https://via.placeholder.com/150",
+    };
+  };
+
+  if (isLoading) {
+    return <h2>Загружаем места...</h2>;
+  }
+
+  return places && <List elements={places} />;
 }
 
