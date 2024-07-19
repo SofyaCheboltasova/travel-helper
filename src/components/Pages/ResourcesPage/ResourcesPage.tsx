@@ -3,27 +3,27 @@ import React, { useEffect, useState } from "react";
 import style from "./ResourcesPage.module.scss";
 import resources from "../../../assets/json/resources.json";
 
-import Modal from "../../Elements/Modal/Modal";
 import TelegramApi from "../../api/TelegramApi";
-import SearchBar from "../../Elements/SearchBar/SearchBar";
 import Header from "../../Elements/Header/Header";
+import SearchBar from "../../Elements/SearchBar/SearchBar";
 import ModalProps from "../../../utils/interfaces/ModalProps";
+import List from "../../Elements/List/List";
 
 export default function ResourcesPage() {
-  const [channelData, setChannelData] = useState<ModalProps[]>([]);
+  const [channelsData, setChannelsData] = useState<ModalProps[]>([]);
   const [searchInput, setSearchInput] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const api = new TelegramApi();
 
-    async function fetchAllChannelData() {
+    async function fetchChannelsData() {
       setIsLoading(true);
       try {
-        const allChannelData = await Promise.all(
+        const channelsData = await Promise.all(
           resources.map((resource) => api.getChannelData(resource))
         );
-        setChannelData(allChannelData.flat());
+        setChannelsData(channelsData.flat());
       } catch (error) {
         console.error("Error fetching channel data");
       } finally {
@@ -32,17 +32,17 @@ export default function ResourcesPage() {
     }
 
     if (resources.length > 0) {
-      fetchAllChannelData();
+      fetchChannelsData();
     }
   }, []);
 
   useEffect(() => {
-    const searchedData: ModalProps[] = channelData.map((data) => {
-      const isInputEmpty: boolean = searchInput.trim() === "";
+    const hiddenData = channelsData.map((data) => {
+      const isInputEmpty = searchInput.trim() === "";
       if (isInputEmpty) return { ...data, hidden: false };
 
       const { title, description, theme } = data;
-      const isInputMatch: boolean = isSubstrInTexts(searchInput, [
+      const isInputMatch = isSubstrInTexts(searchInput, [
         title,
         description,
         theme,
@@ -51,7 +51,7 @@ export default function ResourcesPage() {
       return { ...data, hidden: !isInputMatch };
     });
 
-    setChannelData(searchedData);
+    setChannelsData(hiddenData);
   }, [searchInput]);
 
   const isSubstrInTexts = (substring: string, texts: string[]): boolean => {
@@ -63,26 +63,19 @@ export default function ResourcesPage() {
     return isSubstrInTexts > 0;
   };
 
-  if (isLoading) {
-    return <h2 className={style.loader}>Загружаем каналы...</h2>;
-  }
-
   const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchInput = e.target.value.trim().toLowerCase();
     setSearchInput(searchInput);
   };
 
+  if (isLoading) {
+    return <h2 className={style.loader}>Загружаем каналы...</h2>;
+  }
+
   return (
     <div className={style.resources__wrapper} key="resources">
       <Header children={<SearchBar onChange={handleSearchInput} />} />
-
-      <ul className={style.resources__list}>
-        {channelData.map((data) => (
-          <li key={data.id} className={data.hidden ? style.hidden : ""}>
-            <Modal data={data} />
-          </li>
-        ))}
-      </ul>
+      <List elements={channelsData} />
     </div>
   );
 }
