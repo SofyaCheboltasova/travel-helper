@@ -1,13 +1,7 @@
 @import "../../../assets/styles/consts.module.scss";
-@import "../../../assets/styles/mixins.module.scss";
+@import "../../../assets/styles/placeholders.module.scss";
 
 .nav {
-  @include size(100%, 100vh);
-  @include offsets(2rem);
-  @include flex(column, 2rem);
-
-  border-right: $box-border-hover;
-  box-shadow: $box-shadow-default;
-  background-color: $color-main;
+  @extend %nav;
 }
 

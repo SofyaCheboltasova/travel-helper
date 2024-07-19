@@ -1,0 +1,15 @@
+@import "../../../assets/styles/placeholders.module.scss";
+@import "../../../assets/styles/mixins.module.scss";
+
+.expandedNav {
+  @extend %nav;
+  @include size(150%, 100vh);
+  z-index: 1;
+
+  &__header {
+    display: grid;
+    grid-template-columns: 1fr 6fr;
+    gap: 1rem;
+  }
+}
+
