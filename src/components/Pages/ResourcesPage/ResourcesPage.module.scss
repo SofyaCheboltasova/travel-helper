@@ -6,17 +6,6 @@
   @include flex(column, 1rem);
 
   flex: 1;
-  position: relative;
-  overflow: hidden scroll;
-
-  &::-webkit-scrollbar {
-    @include size(3px);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    @include borders($radius: 5px);
-    background-color: $color-secondary;
-  }
 }
 
 .loader {

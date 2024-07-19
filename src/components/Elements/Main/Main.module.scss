@@ -1,10 +1,12 @@
 @import "../../../assets/styles/mixins.module.scss";
+@import "../../../assets/styles/placeholders.module.scss";
 
 .main {
   @include size(100%, $max-h: 100vh);
   @include flex(column);
   @include borders();
 
+  @extend %scroll;
+
   background-color: $color-main;
 }
-

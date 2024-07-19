@@ -3,8 +3,9 @@
 
 .expandedNav {
   @extend %nav;
-  @include size(150%, 100vh);
-  z-index: 1;
+  @extend %scroll;
+
+  @include size(30vw, 100vh);
 
   &__header {
     display: grid;
@@ -12,4 +13,3 @@
     gap: 1rem;
   }
 }
-
