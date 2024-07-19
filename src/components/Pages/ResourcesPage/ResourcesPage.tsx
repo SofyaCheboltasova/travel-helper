@@ -8,6 +8,7 @@ import Header from "../../Elements/Header/Header";
 import SearchBar from "../../Elements/SearchBar/SearchBar";
 import ModalProps from "../../../utils/interfaces/ModalProps";
 import List from "../../Elements/List/List";
+import Loader from "../../Elements/Loader/Loader";
 
 export default function ResourcesPage() {
   const [channelsData, setChannelsData] = useState<ModalProps[]>([]);
@@ -69,7 +70,7 @@ export default function ResourcesPage() {
   };
 
   if (isLoading) {
-    return <h2 className={style.loader}>Загружаем каналы...</h2>;
+    return <Loader text={"Загружаем каналы..."} />;
   }
 
   return (
