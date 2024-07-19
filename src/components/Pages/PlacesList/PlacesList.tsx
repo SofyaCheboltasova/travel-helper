@@ -5,6 +5,7 @@ import { RootState } from "../../../redux/types";
 import { PlaceResponse } from "../../../utils/interfaces/OpenTripMapApi/QueryPlace";
 import List from "../../Elements/List/List";
 import ModalProps from "../../../utils/interfaces/ModalProps";
+import Loader from "../../Elements/Loader/Loader";
 
 export default function PlacesList() {
   const { lon, lat } = useSelector((state: RootState) => state.search);
@@ -27,25 +28,31 @@ export default function PlacesList() {
       }
     }
 
-    if (lon && lat) fetchPlacesInRadius();
+    fetchPlacesInRadius();
   }, [lon, lat]);
 
   const setModalProps = (place: PlaceResponse): ModalProps => {
-    const { xid, name, info, wikipedia, kinds, image } = place;
+    const { xid, name, wikipedia, rate, preview, wikipedia_extracts } = place;
+
+    const getTheme = () => {
+      const isHistorical = rate[rate.length - 1] === "h";
+      return isHistorical ? "Объект культурного наследия" : "Популярное место";
+    };
+
     return {
       id: xid,
       title: name,
-      description: info.descr || "Описание отсутствует",
+      description: wikipedia_extracts?.text || "Описание отсутствует",
       link: wikipedia,
-      theme: kinds,
-      image: image || "https://via.placeholder.com/150",
+      theme: getTheme(),
+      image: preview?.sources || "https://via.placeholder.com/150",
     };
   };
 
   if (isLoading) {
-    return <h2>Загружаем места...</h2>;
+    return <Loader text={"Загружаем места..."} />;
+  } else {
+    return places && <List elements={places} />;
   }
-
-  return places && <List elements={places} />;
 }
 
