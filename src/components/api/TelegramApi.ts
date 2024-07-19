@@ -1,4 +1,4 @@
-import ChannelData from "../../utils/interfaces/TelegramApi/ChannelData";
+import ModalProps from "../../utils/interfaces/ModalProps";
 import ResourceData from "../../utils/interfaces/TelegramApi/ResourceData";
 
 export default class TelegramApi {
@@ -26,23 +26,23 @@ export default class TelegramApi {
 
   public getChannelData = async (
     resourceData: ResourceData
-  ): Promise<ChannelData> => {
-    const channelData: ChannelData = await this.handleFetch(
+  ): Promise<ModalProps> => {
+    const channelData: ModalProps = await this.handleFetch(
       "getChat",
       "chat_id",
-      `@${resourceData.name}`
+      `@${resourceData.link}`
     );
 
     const { id, title, description } = channelData;
-    const { theme, name } = resourceData;
-    const channelLink = `https://t.me/${name}`;
+    const { theme, link } = resourceData;
+    const channelLink = `https://t.me/${link}`;
 
-    const returnData: ChannelData = {
+    const returnData: ModalProps = {
       id: id,
       title: title,
       description: description,
       theme: theme,
-      name: channelLink,
+      link: channelLink,
     };
 
     return returnData;
