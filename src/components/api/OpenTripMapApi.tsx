@@ -1,18 +1,26 @@
 import {
+  CityParams,
+  CityResponse,
+} from "../../utils/interfaces/OpenTripMapApi/QueryCity";
+import {
   Lang,
-  QueryRadiusParams,
-  QueryRadiusResponse,
+  RadiusParams,
+  RadiusResponse,
 } from "../../utils/interfaces/OpenTripMapApi/QueryRadius";
 
 export default class OpenTripMapApi {
   private lang: Lang = "ru";
   private apiKey: string;
-  private queryString: string = "";
-  private radiusParams: QueryRadiusParams;
+  private radiusParams: RadiusParams;
+  private cityParams: CityParams;
+
   private url: string = `http://api.opentripmap.com/0.1/${this.lang}/places/`;
 
   constructor() {
     this.apiKey = import.meta.env.VITE_OPENTRIP_KEY;
+
+    this.cityParams = { name: "Москва" };
+
     this.radiusParams = {
       radius: 1000,
       lon: 0,
@@ -21,6 +29,29 @@ export default class OpenTripMapApi {
       format: "json",
       limit: 10,
     };
+  }
+
+  private async handleFetch(url: string) {
+    const response = await fetch(url);
+    const data = await response.json();
+    if (!data.ok) {
+      throw new Error(data.description);
+    }
+    return data.result;
+  }
+
+  private createQueryUrl(
+    endpoint: string,
+    params: RadiusParams | CityParams
+  ): string {
+    const filteredParams = Object.entries(params)
+      .filter(([, value]) => value)
+      .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+
+    const queryParams = new URLSearchParams(filteredParams);
+    queryParams.append("apikey", this.apiKey);
+
+    return `${this.url}${endpoint}?${queryParams.toString()}`;
   }
 
   private setQueryRadiusParams(lon: number, lat: number, radius?: number) {
@@ -32,37 +63,30 @@ export default class OpenTripMapApi {
     };
   }
 
-  private createQueryUrl(endpoint: string) {
-    const filteredParams = Object.entries(this.radiusParams)
-      .filter(([key, value]) => value !== undefined)
-      .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
-
-    const queryParams = new URLSearchParams(filteredParams);
-    queryParams.append("apikey", this.apiKey);
-
-    this.queryString = `${this.url}${endpoint}?${queryParams.toString()}`;
-  }
-
-  private async handleFetch(queryString: string) {
-    const response = await fetch(queryString);
-
-    const data = await response.json();
-    if (!data.ok) {
-      throw new Error(data.description);
-    }
-
-    return data.result;
-  }
-
   public async getPlacesInRadius(lon: number, lat: number, radius?: number) {
     this.setQueryRadiusParams(lon, lat, radius);
-    this.createQueryUrl("radius");
+    const queryUrl = this.createQueryUrl("radius", this.radiusParams);
 
-    const radiusResponse: QueryRadiusResponse[] = await this.handleFetch(
-      this.queryString
-    );
+    const places: RadiusResponse[] = await this.handleFetch(queryUrl);
+    return places;
+  }
 
-    return radiusResponse;
+  private setQueryCityParams(name: string) {
+    this.cityParams = {
+      ...this.cityParams,
+      name: name,
+    };
+  }
+
+  public async getCityCoordinates(name: string) {
+    this.setQueryCityParams(name);
+    const queryUrl = this.createQueryUrl("geoname", this.cityParams);
+    const city: CityResponse = await this.handleFetch(queryUrl);
+
+    return {
+      lon: city.lon,
+      lat: city.lat,
+    };
   }
 }
 

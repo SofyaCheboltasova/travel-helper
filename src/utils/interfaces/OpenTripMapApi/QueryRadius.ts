@@ -1,4 +1,4 @@
-interface QueryRadiusParams {
+interface RadiusParams {
   radius: number;
   lon: number;
   lat: number;
@@ -18,7 +18,7 @@ interface Point {
   lat: number;
 }
 
-interface QueryRadiusResponse {
+interface RadiusResponse {
   name: string;
   osm: string;
   xid: string;
@@ -27,5 +27,5 @@ interface QueryRadiusResponse {
   point: Point;
 }
 
-export type { QueryRadiusParams, QueryRadiusResponse, Lang };
+export type { RadiusParams, RadiusResponse, Lang };
 
