@@ -1,6 +1,6 @@
 interface ResourceData {
   theme: string;
-  name: string;
+  link: string;
 }
 
 export default ResourceData;
