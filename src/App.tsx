@@ -7,32 +7,36 @@ import Main from "./components/Elements/Main/Main";
 import MapComponent from "./components/Pages/MapPage/MapPage";
 import ResourcesPage from "./components/Pages/ResourcesPage/ResourcesPage";
 import WelcomePage from "./components/Pages/WelcomePage/WelcomePage";
+import { Provider } from "react-redux";
+import store from "./redux/store";
 
 function App() {
   return (
-    <Router>
-      <section className={style.app}>
-        <Nav />
-        <Routes>
-          <Route
-            path={pages.home.path}
-            element={<Main children={<WelcomePage />} />}
-          />
-          <Route
-            path={pages.newRoute.path}
-            element={<Main children={<MapComponent />} />}
-          />
-          <Route
-            path={pages.savedRoutes.path}
-            element={<Main children={<MapComponent />} />}
-          />
-          <Route
-            path={pages.tickets.path}
-            element={<Main children={<ResourcesPage />} />}
-          />
-        </Routes>
-      </section>
-    </Router>
+    <Provider store={store}>
+      <Router>
+        <section className={style.app}>
+          <Nav />
+          <Routes>
+            <Route
+              path={pages.home.path}
+              element={<Main children={<WelcomePage />} />}
+            />
+            <Route
+              path={pages.newRoute.path}
+              element={<Main children={<MapComponent />} />}
+            />
+            <Route
+              path={pages.savedRoutes.path}
+              element={<Main children={<MapComponent />} />}
+            />
+            <Route
+              path={pages.tickets.path}
+              element={<Main children={<ResourcesPage />} />}
+            />
+          </Routes>
+        </section>
+      </Router>
+    </Provider>
   );
 }
 

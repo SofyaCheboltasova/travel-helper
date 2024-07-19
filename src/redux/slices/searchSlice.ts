@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Coordinates } from "../../utils/interfaces/OpenTripMapApi/QueryCity";
 
-const initialState: Coordinates = { lon: 0, lat: 0 };
+const initialState: Coordinates = { lon: 37.6176, lat: 55.7558 };
 
 const searchSlice = createSlice({
   name: "search",
