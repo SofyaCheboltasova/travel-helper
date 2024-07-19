@@ -6,28 +6,37 @@ import Button from "../Button/Button";
 import SearchBar from "../SearchBar/SearchBar";
 import OpenTripMapApi from "../../api/OpenTripMapApi";
 import { Coordinates } from "../../../utils/interfaces/OpenTripMapApi/QueryCity";
+import store from "../../../redux/store";
+import searchSlice from "../../../redux/slices/searchSlice";
 
 export default function ExpandedNav({ onClose }: { onClose: () => void }) {
   const [city, setCity] = useState<string>("Москва");
-  const [, setCoords] = useState<Coordinates>({ lon: 0, lat: 0 });
   const [, setIsLoading] = useState<boolean>(true);
+  const [cityCoordinates, setCityCoordinates] = useState<Coordinates>({
+    lon: 0,
+    lat: 0,
+  });
 
   const api = new OpenTripMapApi();
 
   useEffect(() => {
-    async function fetchCity() {
+    async function fetchCityCoordinates() {
       setIsLoading(true);
       try {
-        const fetchedCoords = await api.getCityCoordinates(city);
-        setCoords(fetchedCoords);
+        const fetchedCityData = await api.getCityCoordinates(city);
+        setCityCoordinates(fetchedCityData);
       } catch (error) {
         console.error("Error fetching city data");
       } finally {
         setIsLoading(false);
       }
     }
-    fetchCity();
+    fetchCityCoordinates();
   }, [city]);
+
+  useEffect(() => {
+    store.dispatch(searchSlice.actions.setCity(cityCoordinates));
+  }, [cityCoordinates]);
 
   const handleEnterPressed = (city: string) => {
     setCity(city);
