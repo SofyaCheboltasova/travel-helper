@@ -2,6 +2,7 @@ import {
   CityParams,
   CityResponse,
 } from "../../utils/interfaces/OpenTripMapApi/QueryCity";
+import { PlaceResponse } from "../../utils/interfaces/OpenTripMapApi/QueryPlace";
 import {
   Lang,
   RadiusParams,
@@ -33,20 +34,22 @@ export default class OpenTripMapApi {
 
   private async handleFetch(url: string) {
     const response = await fetch(url);
-    const data = await response.json();
-    if (!data.ok) {
-      throw new Error(data.description);
+    if (!response.ok) {
+      throw new Error(response.statusText);
     }
-    return data.result;
+    const data = await response.json();
+    return data;
   }
 
   private createQueryUrl(
     endpoint: string,
-    params: RadiusParams | CityParams
+    params?: RadiusParams | CityParams
   ): string {
-    const filteredParams = Object.entries(params)
-      .filter(([, value]) => value)
-      .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+    const filteredParams = params
+      ? Object.entries(params)
+          .filter(([, value]) => value)
+          .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+      : "";
 
     const queryParams = new URLSearchParams(filteredParams);
     queryParams.append("apikey", this.apiKey);
@@ -63,12 +66,37 @@ export default class OpenTripMapApi {
     };
   }
 
+  private async getPlaceData(xid: string): Promise<PlaceResponse> {
+    const queryUrl = this.createQueryUrl(`xid/${xid}`);
+    const placeResponse = await this.handleFetch(queryUrl);
+
+    const placeData: PlaceResponse = {
+      xid: placeResponse.xid,
+      point: {
+        lon: placeResponse.lon,
+        lat: placeResponse.lat,
+      },
+      kinds: placeResponse.kinds,
+      name: placeResponse.name,
+      wikipedia: placeResponse.wikipedia,
+      image: placeResponse.image,
+      info: {
+        descr: placeResponse.info.descr,
+      },
+    };
+    return placeData;
+  }
+
   public async getPlacesInRadius(lon: number, lat: number, radius?: number) {
     this.setQueryRadiusParams(lon, lat, radius);
     const queryUrl = this.createQueryUrl("radius", this.radiusParams);
 
     const places: RadiusResponse[] = await this.handleFetch(queryUrl);
-    return places;
+    const placesInfo: PlaceResponse[] = await Promise.all(
+      places.slice(0, 10).map((place) => this.getPlaceData(place.xid))
+    );
+
+    return placesInfo;
   }
 
   private setQueryCityParams(name: string) {

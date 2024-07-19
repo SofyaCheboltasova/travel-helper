@@ -1,12 +1,10 @@
 import { Coordinates } from "./QueryCity";
 
-interface PlaceParams {
-  xid: string;
-}
-
 interface PlaceResponse {
+  xid: string;
   point: Coordinates;
   name: string;
+  kinds: string;
   wikipedia: string;
   image: string;
   info: {
@@ -14,5 +12,5 @@ interface PlaceResponse {
   };
 }
 
-export type { PlaceParams, PlaceResponse };
+export type { PlaceResponse };
 
