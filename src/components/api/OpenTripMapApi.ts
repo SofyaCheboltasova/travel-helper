@@ -23,11 +23,12 @@ export default class OpenTripMapApi {
     this.cityParams = { name: "Москва" };
 
     this.radiusParams = {
-      radius: 1000,
+      radius: 10000,
       lon: 0,
       lat: 0,
-      rate: "1",
       format: "json",
+      src_attr: "wikidata" && "osm",
+      rate: "3" && "3h" && "2h" && "2",
       limit: 10,
     };
   }
@@ -68,23 +69,8 @@ export default class OpenTripMapApi {
 
   private async getPlaceData(xid: string): Promise<PlaceResponse> {
     const queryUrl = this.createQueryUrl(`xid/${xid}`);
-    const placeResponse = await this.handleFetch(queryUrl);
-
-    const placeData: PlaceResponse = {
-      xid: placeResponse.xid,
-      point: {
-        lon: placeResponse.lon,
-        lat: placeResponse.lat,
-      },
-      kinds: placeResponse.kinds,
-      name: placeResponse.name,
-      wikipedia: placeResponse.wikipedia,
-      image: placeResponse.image,
-      info: {
-        descr: placeResponse.info.descr,
-      },
-    };
-    return placeData;
+    const placeResponse: PlaceResponse = await this.handleFetch(queryUrl);
+    return placeResponse;
   }
 
   public async getPlacesInRadius(lon: number, lat: number, radius?: number) {
@@ -92,9 +78,19 @@ export default class OpenTripMapApi {
     const queryUrl = this.createQueryUrl("radius", this.radiusParams);
 
     const places: RadiusResponse[] = await this.handleFetch(queryUrl);
-    const placesInfo: PlaceResponse[] = await Promise.all(
-      places.slice(0, 10).map((place) => this.getPlaceData(place.xid))
+
+    const sortedPlaces = places.sort((a, b) => {
+      const rateOrder = ["3", "3h", "2", "2h", "1", "1h", "0"];
+      return rateOrder.indexOf(b.rate) - rateOrder.indexOf(a.rate);
+    });
+
+    const placesInfoResults = await Promise.allSettled(
+      sortedPlaces.slice(0, 10).map((place) => this.getPlaceData(place.xid))
     );
+
+    const placesInfo: PlaceResponse[] = placesInfoResults
+      .filter((result) => result.status === "fulfilled")
+      .map((result) => (result as PromiseFulfilledResult<PlaceResponse>).value);
 
     return placesInfo;
   }
