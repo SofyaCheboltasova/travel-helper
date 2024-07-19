@@ -1,27 +1,31 @@
 import React from "react";
 
 import style from "./SearchBar.module.scss";
+import SearchBarProps from "../../../utils/interfaces/SearchBarProps";
 
 export default function SearchBar({
   onChange,
-}: {
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) {
-  const pattern: string = "^@[a-zA-Z0-9_]{5,32}$";
-  const placeholder: string = "Поиск TG канала по названию, описанию или теме";
-
+  onKeyDown,
+  placeholder = "Поиск TG канала по названию, описанию или теме",
+}: SearchBarProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.target.value = e.target.value[0].toUpperCase() + e.target.value.slice(1);
-    onChange(e);
+    if (onChange) onChange(e);
+  };
+
+  const handleKeydown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === "Enter" && onKeyDown) {
+      onKeyDown(e.currentTarget.value);
+    }
   };
 
   return (
     <input
       type="search"
-      pattern={pattern}
       placeholder={placeholder}
       className={style.searchBar}
       onChange={handleChange}
+      onKeyDown={handleKeydown}
     />
   );
 }
