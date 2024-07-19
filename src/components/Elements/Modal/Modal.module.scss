@@ -22,16 +22,26 @@
   @include size(100%, 100%);
   @include flex(column, 1rem, space-between);
 
-  transition: $transition-scale;
+  transition: $transition-transform;
 
   &:hover,
   &:focus-visible {
     @include borders($box-border-hover);
     transform: $transform-scale-hover;
+
+    .modal__label::before {
+      transform: $transform-translate-hover;
+      transition: $transition-transform;
+    }
   }
 
   &:not(:hover) {
     transform: $transform-scale-default;
+
+    .modal__label::before {
+      transform: $transform-translate-default;
+      transition: $transition-transform;
+    }
   }
 }
 
@@ -45,14 +55,13 @@
 
   &::before {
     content: "";
-    @include size(50%, 130%);
+    @include size(100%, 130%);
 
     position: absolute;
     z-index: -1;
     top: 50%;
     left: 50%;
     background-color: $color-font-dark;
-    transform: translate(-50%, -50%) skew(333deg);
   }
 }
 

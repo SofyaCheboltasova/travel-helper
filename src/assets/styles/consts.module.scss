@@ -13,7 +13,10 @@ $font-main-medium: 500 1em $font-family;
 $font-main-regular: 400 1em $font-family;
 $font-italic-bold: italic 600 1em $font-family;
 
-$transition-scale: transform 0.4s ease-out;
+$transition-transform: transform 0.4s ease-out;
 $transform-scale-hover: scale(1.01);
 $transform-scale-default: scale(1);
+
+$transform-translate-hover: translate(-50%, -50%) skew(0deg);
+$transform-translate-default: translate(-50%, -50%) skew(-30deg);
 
