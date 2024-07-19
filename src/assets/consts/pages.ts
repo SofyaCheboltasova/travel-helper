@@ -5,9 +5,9 @@ export const pages = {
   },
   newRoute: {
     path: "/new-route",
-    name: "New route",
+    name: "Новый маршрут",
   },
-  savedRoutes: { path: "/saved-routes", name: "Saved routes" },
-  tickets: { path: "/tickets", name: "Tickets" },
+  savedRoutes: { path: "/saved-routes", name: "Мои маршруты" },
+  tickets: { path: "/tickets", name: "Ресурсы для путешественников" },
 };
 
