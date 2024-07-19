@@ -23,6 +23,7 @@ interface RadiusResponse {
   osm: string;
   xid: string;
   wikidata?: string;
+  rate: "1" | "2" | "3" | "1h" | "2h" | "3h";
   kind: string;
   point: Point;
 }

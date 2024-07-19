@@ -2,8 +2,8 @@ interface ModalProps {
   id: string;
   title: string;
   description: string;
-  link: string;
   theme: string;
+  link?: string;
   image?: string;
   hidden?: boolean;
 }
