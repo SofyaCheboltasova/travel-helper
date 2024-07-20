@@ -1,0 +1,7 @@
+@import "../../../assets/styles/mixins.module.scss";
+@import "../../../assets/styles/placeholders.module.scss";
+
+.sights__container {
+  @include size(100%, 100%);
+}
+

@@ -6,6 +6,7 @@ export default interface SearchState {
   city: CityIdentifier;
   allPlaces: PlaceIdentifier[];
   currentPlaces: PlaceIdentifier[];
+  openedPlaceLink: string;
   currentPage: number;
   itemsPerPage: number;
 }

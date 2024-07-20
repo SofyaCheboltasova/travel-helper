@@ -23,14 +23,16 @@ export default function Nav() {
       <Button
         text={pages.newRoute.name}
         onClick={() => {
-          toggleExpanded();
           navigate(pages.newRoute.path);
         }}
       ></Button>
 
       <Button
         text={pages.savedRoutes.name}
-        onClick={() => navigate(pages.savedRoutes.path)}
+        onClick={() => {
+          toggleExpanded();
+          navigate(pages.savedRoutes.path);
+        }}
       ></Button>
 
       <Button

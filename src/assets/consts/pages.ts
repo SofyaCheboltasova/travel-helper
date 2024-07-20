@@ -4,10 +4,10 @@ export const pages = {
     name: "home",
   },
   newRoute: {
-    path: "/new-route",
-    name: "Новый маршрут",
+    path: "/routes",
+    name: "Маршруты",
   },
-  savedRoutes: { path: "/saved-routes", name: "Мои маршруты" },
-  tickets: { path: "/tickets", name: "Ресурсы для путешественников" },
+  savedRoutes: { path: "/sights", name: "Достопримечательности" },
+  tickets: { path: "/resources", name: "Ресурсы для путешественников" },
 };
 

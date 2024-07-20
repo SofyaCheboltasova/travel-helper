@@ -9,6 +9,7 @@ import ResourcesPage from "./components/Pages/ResourcesPage/ResourcesPage";
 import WelcomePage from "./components/Pages/WelcomePage/WelcomePage";
 import { Provider } from "react-redux";
 import store from "./redux/store";
+import SightsPage from "./components/Pages/SightsPage/SightsPage";
 
 function App() {
   return (
@@ -27,7 +28,7 @@ function App() {
             />
             <Route
               path={pages.savedRoutes.path}
-              element={<Main children={<MapComponent />} />}
+              element={<Main children={<SightsPage />} />}
             />
             <Route
               path={pages.tickets.path}
