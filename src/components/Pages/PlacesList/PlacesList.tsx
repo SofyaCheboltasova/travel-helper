@@ -11,7 +11,6 @@ import {
 import List from "../../Elements/List/List";
 import ModalProps from "../../../utils/interfaces/ModalProps";
 import Loader from "../../Elements/Loader/Loader";
-import Header from "../../Elements/Header/Header";
 
 export default function PlacesList() {
   const dispatch = useDispatch();
@@ -77,14 +76,7 @@ export default function PlacesList() {
   if (isLoading) {
     return <Loader text={"Загружаем места..."} />;
   } else {
-    return (
-      places && (
-        <div>
-          <Header children={<h2>{city.name}</h2>} />
-          <List elements={places} />
-        </div>
-      )
-    );
+    return places && <List elements={places} />;
   }
 }
 

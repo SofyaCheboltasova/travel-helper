@@ -7,6 +7,7 @@
 
   @include size(30vw, 100vh);
 
+  gap: 0;
   &__header {
     display: grid;
     grid-template-columns: 1fr 6fr;
