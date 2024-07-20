@@ -1,0 +1,44 @@
+@import "../../../assets/styles/placeholders.module.scss";
+@import "../../../assets/styles/mixins.module.scss";
+@import "../../../assets/styles/consts.module.scss";
+
+.selector__wrapper {
+  @include flex(column, 1rem);
+  @include size(100%);
+
+  @extend %rectangle-default;
+  @extend %scroll;
+}
+
+.selector__button {
+  @extend %rectangle-default;
+
+  font: $font-main-medium;
+  box-shadow: none;
+  background-color: $color-main;
+
+  padding: 0;
+}
+
+.selector__list {
+  @include flex(column, 2rem);
+}
+
+.selector__options {
+  @include flex(column, 1rem);
+}
+
+.list {
+  @include size(100%);
+  padding: 1rem;
+  &::first-letter {
+    text-transform: capitalize;
+  }
+
+  &:hover,
+  &.selected {
+    border-radius: $box-radius;
+    background-color: $color-button-hover;
+  }
+}
+
