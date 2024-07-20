@@ -11,7 +11,7 @@ import PlacesList from "../../Pages/PlacesList/PlacesList";
 import { Coordinates } from "../../../utils/interfaces/OpenTripMapApi/QueryCity";
 
 export default function ExpandedNav({ onClose }: { onClose: () => void }) {
-  const [city, setCity] = useState<string>("Москва");
+  const [city, setCity] = useState<string>("");
   const dispatch = useDispatch();
   const api = new OpenTripMapApi();
 
@@ -25,10 +25,10 @@ export default function ExpandedNav({ onClose }: { onClose: () => void }) {
       }
     }
     if (city) fetchCityCoordinates();
-  }, [city, dispatch]);
+  }, [city]);
 
   const handleEnterPressed = (city: string) => {
-    setCity(city);
+    if (city) setCity(city);
   };
 
   return (
