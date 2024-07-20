@@ -118,6 +118,7 @@ export default class OpenTripMapApi {
     const city: CityResponse = await this.handleFetch(queryUrl);
 
     return {
+      name: city.name,
       lon: city.lon,
       lat: city.lat,
     };

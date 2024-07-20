@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Coordinates } from "../../utils/interfaces/OpenTripMapApi/QueryCity";
+import { CityIdentifier } from "../../utils/interfaces/OpenTripMapApi/QueryCity";
 import SearchState from "../types";
 import { PlaceIdentifier } from "../../utils/interfaces/OpenTripMapApi/QueryPlace";
 
 const initialState: SearchState = {
-  currentLocation: { lon: 37.6176, lat: 55.7558 },
+  city: { lon: 37.6176, lat: 55.7558, name: "Москва" },
   allPlaces: [],
   currentPlaces: [],
   currentPage: 0,
@@ -15,8 +15,8 @@ const searchSlice = createSlice({
   name: "search",
   initialState,
   reducers: {
-    setCity(state, action: PayloadAction<Coordinates>) {
-      state.currentLocation = action.payload;
+    setCity(state, action: PayloadAction<CityIdentifier>) {
+      state.city = action.payload;
     },
     setPlaces(state, action: PayloadAction<PlaceIdentifier[]>) {
       state.allPlaces = action.payload;

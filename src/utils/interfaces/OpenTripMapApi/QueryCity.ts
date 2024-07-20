@@ -1,8 +1,3 @@
-interface CityParams {
-  name: string;
-  country?: string;
-}
-
 interface CityResponse {
   country: string;
   timezone: string;
@@ -17,5 +12,11 @@ interface Coordinates {
   lat: number;
 }
 
-export type { CityParams, CityResponse, Coordinates };
+interface CityParams {
+  name: string;
+}
+
+type CityIdentifier = CityParams & Coordinates;
+
+export type { CityIdentifier, CityParams, CityResponse, Coordinates };
 

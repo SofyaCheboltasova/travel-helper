@@ -11,10 +11,11 @@ import {
 import List from "../../Elements/List/List";
 import ModalProps from "../../../utils/interfaces/ModalProps";
 import Loader from "../../Elements/Loader/Loader";
+import Header from "../../Elements/Header/Header";
 
 export default function PlacesList() {
   const dispatch = useDispatch();
-  const { currentPlaces, currentLocation } = useSelector(
+  const { currentPlaces, city } = useSelector(
     (state: RootState) => state.search
   );
   const [isLoading, setIsLoading] = useState(true);
@@ -26,9 +27,7 @@ export default function PlacesList() {
     async function fetchPlacesInRadius() {
       setIsLoading(true);
       try {
-        const allPlaces: PlaceIdentifier[] = await api.getAllPlaces(
-          currentLocation
-        );
+        const allPlaces: PlaceIdentifier[] = await api.getAllPlaces(city);
         dispatch(searchSlice.actions.setPlaces(allPlaces));
       } catch (error) {
         console.error("Error fetching places in radius", error);
@@ -38,7 +37,7 @@ export default function PlacesList() {
     }
 
     fetchPlacesInRadius();
-  }, [currentLocation.lon]);
+  }, [city.lon]);
 
   useEffect(() => {
     async function getPlacesData() {
@@ -78,7 +77,14 @@ export default function PlacesList() {
   if (isLoading) {
     return <Loader text={"Загружаем места..."} />;
   } else {
-    return places && <List elements={places} />;
+    return (
+      places && (
+        <div>
+          <Header children={<h2>{city.name}</h2>} />
+          <List elements={places} />
+        </div>
+      )
+    );
   }
 }
 

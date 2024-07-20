@@ -1,9 +1,9 @@
-import { Coordinates } from "../utils/interfaces/OpenTripMapApi/QueryCity";
+import { CityIdentifier } from "../utils/interfaces/OpenTripMapApi/QueryCity";
 import { PlaceIdentifier } from "../utils/interfaces/OpenTripMapApi/QueryPlace";
 import store from "./store";
 
 export default interface SearchState {
-  currentLocation: Coordinates;
+  city: CityIdentifier;
   allPlaces: PlaceIdentifier[];
   currentPlaces: PlaceIdentifier[];
   currentPage: number;

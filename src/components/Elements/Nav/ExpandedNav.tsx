@@ -8,7 +8,7 @@ import Button from "../Button/Button";
 import SearchBar from "../SearchBar/SearchBar";
 import OpenTripMapApi from "../../api/OpenTripMapApi";
 import PlacesList from "../../Pages/PlacesList/PlacesList";
-import { Coordinates } from "../../../utils/interfaces/OpenTripMapApi/QueryCity";
+import { CityIdentifier } from "../../../utils/interfaces/OpenTripMapApi/QueryCity";
 
 export default function ExpandedNav({ onClose }: { onClose: () => void }) {
   const [city, setCity] = useState<string>("");
@@ -18,7 +18,9 @@ export default function ExpandedNav({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     async function fetchCityCoordinates() {
       try {
-        const fetchedCityData: Coordinates = await api.getCityCoordinates(city);
+        const fetchedCityData: CityIdentifier = await api.getCityCoordinates(
+          city
+        );
         dispatch(searchSlice.actions.setCity(fetchedCityData));
       } catch (error) {
         console.error("Error fetching city data");
