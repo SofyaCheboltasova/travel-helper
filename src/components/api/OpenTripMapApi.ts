@@ -1,8 +1,12 @@
 import {
   CityParams,
   CityResponse,
+  Coordinates,
 } from "../../utils/interfaces/OpenTripMapApi/QueryCity";
-import { PlaceResponse } from "../../utils/interfaces/OpenTripMapApi/QueryPlace";
+import {
+  PlaceIdentifier,
+  PlaceResponse,
+} from "../../utils/interfaces/OpenTripMapApi/QueryPlace";
 import {
   Lang,
   RadiusParams,
@@ -19,9 +23,7 @@ export default class OpenTripMapApi {
 
   constructor() {
     this.apiKey = import.meta.env.VITE_OPENTRIP_KEY;
-
     this.cityParams = { name: "Москва" };
-
     this.radiusParams = {
       radius: 10000,
       lon: 0,
@@ -58,41 +60,49 @@ export default class OpenTripMapApi {
     return `${this.url}${endpoint}?${queryParams.toString()}`;
   }
 
-  private setQueryRadiusParams(lon: number, lat: number, radius?: number) {
+  private setQueryRadiusParams(coords: Coordinates, radius?: number) {
     this.radiusParams = {
       ...this.radiusParams,
-      lat: lat,
-      lon: lon,
+      lat: coords.lat,
+      lon: coords.lon,
       radius: radius || 1000,
     };
   }
 
-  private async getPlaceData(xid: string): Promise<PlaceResponse> {
+  private async fetchPlaceData(xid: string): Promise<PlaceResponse> {
     const queryUrl = this.createQueryUrl(`xid/${xid}`);
     const placeResponse: PlaceResponse = await this.handleFetch(queryUrl);
     return placeResponse;
   }
 
-  public async getPlacesInRadius(lon: number, lat: number, radius?: number) {
-    this.setQueryRadiusParams(lon, lat, radius);
+  public async getAllPlaces(
+    coords: Coordinates,
+    radius?: number
+  ): Promise<PlaceIdentifier[]> {
+    this.setQueryRadiusParams(coords, radius);
     const queryUrl = this.createQueryUrl("radius", this.radiusParams);
 
     const places: RadiusResponse[] = await this.handleFetch(queryUrl);
 
-    const sortedPlaces = places.sort((a, b) => {
-      const rateOrder = ["3", "3h", "2", "2h", "1", "1h", "0"];
-      return rateOrder.indexOf(b.rate) - rateOrder.indexOf(a.rate);
-    });
+    const sortedPlaces = places
+      .sort((a, b) => {
+        const rateOrder = ["3", "3h", "2", "2h", "1", "1h", "0"];
+        return rateOrder.indexOf(b.rate) - rateOrder.indexOf(a.rate);
+      })
+      .map((place) => ({ xid: place.xid, point: place.point }));
+    return sortedPlaces;
+  }
 
-    const placesInfoResults = await Promise.allSettled(
-      sortedPlaces.slice(0, 10).map((place) => this.getPlaceData(place.xid))
+  public async getPlacesData(curPlacesIdentifiers: PlaceIdentifier[]) {
+    const fetchedPlacesData = await Promise.allSettled(
+      curPlacesIdentifiers.map((place) => this.fetchPlaceData(place.xid))
     );
 
-    const placesInfo: PlaceResponse[] = placesInfoResults
-      .filter((result) => result.status === "fulfilled")
-      .map((result) => (result as PromiseFulfilledResult<PlaceResponse>).value);
+    const placesData: PlaceResponse[] = fetchedPlacesData
+      .filter((data) => data.status === "fulfilled")
+      .map((data) => (data as PromiseFulfilledResult<PlaceResponse>).value);
 
-    return placesInfo;
+    return placesData;
   }
 
   private setQueryCityParams(name: string) {
