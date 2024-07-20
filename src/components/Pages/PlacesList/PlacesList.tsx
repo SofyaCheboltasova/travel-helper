@@ -1,16 +1,24 @@
 import { useEffect, useState } from "react";
-import OpenTripMapApi from "../../api/OpenTripMapApi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/types";
-import { PlaceResponse } from "../../../utils/interfaces/OpenTripMapApi/QueryPlace";
+
+import searchSlice from "../../../redux/slices/searchSlice";
+import OpenTripMapApi from "../../api/OpenTripMapApi";
+import {
+  PlaceIdentifier,
+  PlaceResponse,
+} from "../../../utils/interfaces/OpenTripMapApi/QueryPlace";
 import List from "../../Elements/List/List";
 import ModalProps from "../../../utils/interfaces/ModalProps";
 import Loader from "../../Elements/Loader/Loader";
 
 export default function PlacesList() {
-  const { lon, lat } = useSelector((state: RootState) => state.search);
+  const dispatch = useDispatch();
+  const { currentPlaces, currentLocation } = useSelector(
+    (state: RootState) => state.search
+  );
   const [isLoading, setIsLoading] = useState(true);
-  const [places, setPlaces] = useState<ModalProps[]>();
+  const [places, setPlacess] = useState<ModalProps[]>();
 
   const api = new OpenTripMapApi();
 
@@ -18,20 +26,38 @@ export default function PlacesList() {
     async function fetchPlacesInRadius() {
       setIsLoading(true);
       try {
-        const places: PlaceResponse[] = await api.getPlacesInRadius(lon, lat);
-        const placesData: ModalProps[] = places.map((p) => setModalProps(p));
-        setPlaces(placesData);
+        const allPlaces: PlaceIdentifier[] = await api.getAllPlaces(
+          currentLocation
+        );
+        dispatch(searchSlice.actions.setPlaces(allPlaces));
       } catch (error) {
-        console.error("Error fetching places data", error);
+        console.error("Error fetching places in radius", error);
       } finally {
         setIsLoading(false);
       }
     }
 
     fetchPlacesInRadius();
-  }, [lon, lat]);
+  }, [currentLocation.lon]);
 
-  const setModalProps = (place: PlaceResponse): ModalProps => {
+  useEffect(() => {
+    async function getPlacesData() {
+      try {
+        const curPlacesData: PlaceResponse[] = await api.getPlacesData(
+          currentPlaces
+        );
+        const curPlacesModalProps: ModalProps[] = curPlacesData.map((p) =>
+          getModalProps(p)
+        );
+        setPlacess(curPlacesModalProps);
+      } catch (error) {
+        console.error("Error current places data", error);
+      }
+    }
+    if (currentPlaces.length > 0) getPlacesData();
+  }, [currentPlaces]);
+
+  const getModalProps = (place: PlaceResponse): ModalProps => {
     const { xid, name, wikipedia, rate, preview, wikipedia_extracts } = place;
 
     const getTheme = () => {
