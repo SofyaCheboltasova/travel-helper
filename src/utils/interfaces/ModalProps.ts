@@ -1,12 +1,7 @@
-interface ModalProps {
-  id: string;
-  title: string;
-  description: string;
-  theme: string;
+import ChannelData from "./TelegramApi/ChannelData";
+
+interface ModalProps extends ChannelData {
   onClick: (link: string) => void;
-  link?: string;
-  image?: string;
-  hidden?: boolean;
 }
 
 export default ModalProps;
