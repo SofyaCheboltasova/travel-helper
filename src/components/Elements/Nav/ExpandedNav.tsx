@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import style from "./ExpandedNav.module.scss";
@@ -7,12 +7,16 @@ import searchSlice from "../../../redux/slices/searchSlice";
 import Button from "../Button/Button";
 import SearchBar from "../SearchBar/SearchBar";
 import OpenTripMapApi from "../../api/OpenTripMapApi";
-import PlacesList from "../../Pages/PlacesList/PlacesList";
 import { CityIdentifier } from "../../../utils/interfaces/OpenTripMapApi/QueryCity";
 import Header from "../Header/Header";
 import { RootState } from "../../../redux/types";
 
-export default function ExpandedNav({ onClose }: { onClose: () => void }) {
+interface ExpandedNavProps {
+  content: ReactElement | undefined;
+  onClose: () => void;
+}
+
+export default function ExpandedNav(props: ExpandedNavProps) {
   const { city } = useSelector((state: RootState) => state.search);
   const [cityName, setCity] = useState<string>(city.name);
   const dispatch = useDispatch();
@@ -42,7 +46,7 @@ export default function ExpandedNav({ onClose }: { onClose: () => void }) {
         children={
           <>
             <div className={style.expandedNav__header}>
-              <Button text={"<"} onClick={onClose} />
+              <Button text={"<"} onClick={props.onClose} />
               <SearchBar
                 onKeyDown={handleEnterPressed}
                 placeholder="Введите город"
@@ -52,7 +56,7 @@ export default function ExpandedNav({ onClose }: { onClose: () => void }) {
           </>
         }
       />
-      <PlacesList />
+      {props.content}
     </nav>
   );
 }
