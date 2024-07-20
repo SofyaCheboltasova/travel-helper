@@ -63,10 +63,15 @@ export default function PlacesList() {
       return isHistorical ? "Объект культурного наследия" : "Популярное место";
     };
 
+    const onClick = () => {
+      dispatch(searchSlice.actions.setOpenedPlace(wikipedia || ""));
+    };
+
     return {
       id: xid,
       title: name,
       description: wikipedia_extracts?.text || "Описание отсутствует",
+      onClick: onClick,
       link: wikipedia,
       theme: getTheme(),
       image: preview?.sources || "https://via.placeholder.com/150",

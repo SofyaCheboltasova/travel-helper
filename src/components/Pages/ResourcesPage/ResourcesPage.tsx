@@ -24,7 +24,15 @@ export default function ResourcesPage() {
         const channelsData = await Promise.all(
           resources.map((resource) => api.getChannelData(resource))
         );
-        setChannelsData(channelsData.flat());
+
+        const enhancedChannelsData = channelsData.flat().map((channel) => ({
+          ...channel,
+          onClick: (link: string) => {
+            window.open(link, "_blank");
+          },
+        }));
+
+        setChannelsData(enhancedChannelsData);
       } catch (error) {
         console.error("Error fetching channel data");
       } finally {

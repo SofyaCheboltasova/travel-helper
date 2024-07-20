@@ -7,6 +7,7 @@ const initialState: SearchState = {
   city: { lon: 37.6176, lat: 55.7558, name: "Москва" },
   allPlaces: [],
   currentPlaces: [],
+  openedPlaceLink: "",
   currentPage: 0,
   itemsPerPage: 10,
 };
@@ -28,6 +29,9 @@ const searchSlice = createSlice({
       const start = state.currentPage * state.itemsPerPage;
       const end = start + state.itemsPerPage;
       state.currentPlaces = state.allPlaces.slice(start, end);
+    },
+    setOpenedPlace(state, action: PayloadAction<string>) {
+      state.openedPlaceLink = action.payload;
     },
   },
 });
