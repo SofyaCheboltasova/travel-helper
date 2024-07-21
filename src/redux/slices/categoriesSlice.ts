@@ -11,7 +11,7 @@ const initialState: CategoriesState = {
     { id: 4, name: CategoryEnum.Monuments, isActive: false },
     { id: 5, name: CategoryEnum.Viewpoints, isActive: false },
   ],
-  selectedCategories: [],
+  selectedCategoriesIds: [],
 };
 
 const categoriesSlice = createSlice({
@@ -19,11 +19,27 @@ const categoriesSlice = createSlice({
   initialState,
   reducers: {
     toggleCategory(state, action: PayloadAction<Category>) {
-      state.allCategories = state.allCategories.map((category) =>
-        category.id === action.payload.id
-          ? { ...category, isActive: !category.isActive }
-          : category
+      const categoryId = state.allCategories.findIndex(
+        (c) => c.id === action.payload.id
       );
+      if (categoryId === -1) return;
+
+      const category = state.allCategories[categoryId];
+      state.allCategories[categoryId] = {
+        ...category,
+        isActive: !category.isActive,
+      };
+
+      const wasSelected = state.selectedCategoriesIds.findIndex(
+        (i) => i === categoryId
+      );
+      if (wasSelected === -1) {
+        state.selectedCategoriesIds.push(categoryId);
+      } else {
+        state.selectedCategoriesIds = state.selectedCategoriesIds.filter(
+          (c) => c !== categoryId
+        );
+      }
     },
   },
 });
