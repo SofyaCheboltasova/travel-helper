@@ -14,9 +14,8 @@ import Loader from "../../Elements/Loader/Loader";
 
 export default function PlacesList() {
   const dispatch = useDispatch();
-  const { currentPlaces, city } = useSelector(
-    (state: RootState) => state.search
-  );
+  const { currentPlaces } = useSelector((state: RootState) => state.search);
+  const { city } = useSelector((state: RootState) => state.map);
   const [isLoading, setIsLoading] = useState(true);
   const [places, setPlacess] = useState<ModalProps[]>();
 

@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 
 import style from "./ExpandedNav.module.scss";
 
-import searchSlice from "../../../redux/slices/searchSlice";
 import Button from "../Button/Button";
 import SearchBar from "../SearchBar/SearchBar";
 import OpenTripMapApi from "../../api/OpenTripMapApi";
 import { CityIdentifier } from "../../../utils/interfaces/OpenTripMapApi/QueryCity";
 import Header from "../Header/Header";
 import { RootState } from "../../../redux/types";
+import mapSlice from "../../../redux/slices/mapSlice";
 
 interface ExpandedNavProps {
   content: ReactElement | undefined;
@@ -17,7 +17,7 @@ interface ExpandedNavProps {
 }
 
 export default function ExpandedNav(props: ExpandedNavProps) {
-  const { city } = useSelector((state: RootState) => state.search);
+  const { city } = useSelector((state: RootState) => state.map);
   const [cityName, setCity] = useState<string>(city.name);
   const dispatch = useDispatch();
   const api = new OpenTripMapApi();
@@ -28,7 +28,7 @@ export default function ExpandedNav(props: ExpandedNavProps) {
         const fetchedCityData: CityIdentifier = await api.getCityCoordinates(
           cityName
         );
-        dispatch(searchSlice.actions.setCity(fetchedCityData));
+        dispatch(mapSlice.actions.setCity(fetchedCityData));
       } catch (error) {
         console.error("Error fetching city data");
       }
