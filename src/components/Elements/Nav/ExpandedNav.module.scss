@@ -5,8 +5,6 @@
   @extend %nav;
   @extend %scroll;
 
-  @include size(30vw, 100vh);
-
   gap: 0;
   &__header {
     display: grid;

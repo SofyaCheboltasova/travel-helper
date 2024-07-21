@@ -1,5 +1,6 @@
 @import "../../../assets/styles/mixins.module.scss";
 
-.map__wrapper {
+.map__wrapper,
+.map__content {
   @include size(100%, 100%);
 }

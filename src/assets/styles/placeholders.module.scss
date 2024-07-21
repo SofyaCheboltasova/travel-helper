@@ -22,7 +22,7 @@
 }
 
 %nav {
-  @include size(100%, 100vh);
+  @include size(30vw, 100vh);
   @include offsets(2rem);
   @include flex(column, 2rem);
 
