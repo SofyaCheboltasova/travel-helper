@@ -12,7 +12,8 @@ export interface SearchState {
 }
 export interface CategoriesState {
   allCategories: Category[];
-  selectedCategoriesIds: number[];
+  categoriesToAdd: Category[];
+  categoriesToRemove: Category[];
 }
 
 export interface MapState {
