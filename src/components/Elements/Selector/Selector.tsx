@@ -6,14 +6,10 @@ import { RootState } from "../../../redux/types";
 import Category from "../../../utils/interfaces/Category";
 
 interface CategorySelectorProps {
-  options: Category[];
   onSelectionChange: (category: Category) => void;
 }
 
-export default function Selector({
-  options,
-  onSelectionChange,
-}: CategorySelectorProps) {
+export default function Selector({ onSelectionChange }: CategorySelectorProps) {
   const { allCategories } = useSelector((state: RootState) => state.categories);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -21,16 +17,11 @@ export default function Selector({
     setIsOpen(!isOpen);
   };
 
-  const handleApply = () => {
-    setIsOpen(false);
-  };
-
   const getClassName = (category: Category): string => {
     return category.isActive ? `${style.list} ${style.selected}` : style.list;
   };
 
   const getOptionTag = (option: Category) => {
-    console.error("RENDER selector");
     return (
       <div
         key={option.id}
@@ -48,13 +39,8 @@ export default function Selector({
         {isOpen ? "Скрыть категории" : "Выбрать категории"}
       </button>
       {isOpen && (
-        <div className={style.selector__list}>
-          <div className={style.selector__options}>
-            {allCategories.map((option) => getOptionTag(option))}
-          </div>
-          <button className={style.selector__button} onClick={handleApply}>
-            Применить
-          </button>
+        <div className={style.selector__options}>
+          {allCategories.map((option) => getOptionTag(option))}
         </div>
       )}
     </div>

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { ReactElement, useState } from "react";
 
 import style from "./Nav.module.scss";
@@ -11,12 +11,10 @@ import PlacesList from "../../Pages/PlacesList/PlacesList";
 import searchSlice from "../../../redux/slices/searchSlice";
 import categoriesSlice from "../../../redux/slices/categoriesSlice";
 import Category from "../../../utils/interfaces/Category";
-import { RootState } from "../../../redux/types";
 
 export default function Nav() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { allCategories } = useSelector((state: RootState) => state.categories);
   const [isExpanded, setIsExpanded] = useState(false);
   const [expandedContent, setExpandedNavContent] = useState<
     ReactElement | undefined
@@ -51,10 +49,7 @@ export default function Nav() {
         text={pages.newRoute.name}
         onClick={() => {
           handleClick(
-            <Selector
-              options={allCategories}
-              onSelectionChange={onCategoryChange}
-            />,
+            <Selector onSelectionChange={onCategoryChange} />,
             pages.newRoute.path
           );
         }}
