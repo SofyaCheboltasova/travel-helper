@@ -3,7 +3,11 @@ import { Coordinates } from "../../../utils/interfaces/OpenTripMapApi/QueryCity"
 import { Map as GisMap, Marker as GisMarker } from "@2gis/mapgl/types";
 
 export default class Marker {
-  public async getMarkers(gisMap: GisMap, locations: Coordinates[]) {
+  public async getMarkers(
+    gisMap: GisMap,
+    locations: Coordinates[],
+    iconPath: string
+  ) {
     const mapglAPI = await load();
 
     const markers = locations.map((loc) => {
@@ -12,6 +16,9 @@ export default class Marker {
       }
       const marker = new mapglAPI.Marker(gisMap, {
         coordinates: [loc.lon, loc.lat],
+        icon: iconPath,
+        size: [48, 48],
+        hoverSize: [100, 100],
       });
       marker.show();
       return marker;
@@ -20,9 +27,11 @@ export default class Marker {
   }
 
   public removeMarkers = (markers: GisMarker[]) => {
-    markers.forEach((marker) => {
-      marker && marker.hide();
-    });
+    if (markers) {
+      markers.forEach((marker) => {
+        marker && marker.hide();
+      });
+    }
   };
 }
 
