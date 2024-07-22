@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux";
-import style from "./SightsPage.module.scss";
+import style from "./WikiFrame.module.scss";
 import { RootState } from "../../../redux/types";
 import { useEffect, useState } from "react";
 
-export default function SightsPage() {
+export default function WikiFrame() {
   const { openedPlaceLink } = useSelector((state: RootState) => state.search);
   const [link, setLink] = useState<string>("");
 
