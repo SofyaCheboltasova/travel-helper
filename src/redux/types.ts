@@ -12,19 +12,13 @@ export interface SearchState {
 }
 export interface CategoriesState {
   allCategories: Category[];
-  categoriesToAdd: Category[];
-  categoriesToRemove: Category[];
+  categoryToAdd: Category | null;
+  categoryToRemove: Category | null;
 }
 
 export interface MapState {
   city: CityIdentifier;
   zoom: number;
-  boundingBox: BoundingBox;
-}
-
-export interface BoundingBox {
-  southWest: number[];
-  northEast: number[];
 }
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -11,8 +11,8 @@ const initialState: CategoriesState = {
     { id: 4, name: CategoryEnum.Monuments, isActive: false },
     { id: 5, name: CategoryEnum.Viewpoints, isActive: false },
   ],
-  categoriesToAdd: [],
-  categoriesToRemove: [],
+  categoryToAdd: null,
+  categoryToRemove: null,
 };
 
 const categoriesSlice = createSlice({
@@ -29,21 +29,9 @@ const categoriesSlice = createSlice({
           : category;
       });
 
-      state.allCategories.forEach((c) => {
-        if (c.isActive && !state.categoriesToAdd.includes(c)) {
-          state.categoriesToAdd.push(c);
-        }
-
-        if (!c.isActive && !state.categoriesToRemove.includes(c)) {
-          state.categoriesToRemove.push(c);
-        }
-      });
-    },
-    resetCategoriesToAdd(state) {
-      state.categoriesToAdd = [];
-    },
-    resetCategoriesToRemove(state) {
-      state.categoriesToRemove = [];
+      !action.payload.isActive
+        ? (state.categoryToAdd = action.payload)
+        : (state.categoryToRemove = action.payload);
     },
   },
 });
