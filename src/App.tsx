@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
 import style from "./App.module.scss";
 import { pages } from "./assets/consts/pages";
 import Nav from "./components/Elements/Nav/Nav";
@@ -10,6 +9,7 @@ import WelcomePage from "./components/Pages/WelcomePage/WelcomePage";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import SightsPage from "./components/Pages/SightsPage/SightsPage";
+import { MapProvider } from "./context/MapContext";
 
 function App() {
   return (
@@ -24,7 +24,11 @@ function App() {
             />
             <Route
               path={pages.newRoute.path}
-              element={<Main children={<MapComponent />} />}
+              element={
+                <MapProvider>
+                  <Main children={<MapComponent />} />
+                </MapProvider>
+              }
             />
             <Route
               path={pages.savedRoutes.path}
