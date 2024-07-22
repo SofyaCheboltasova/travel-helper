@@ -1,18 +1,18 @@
-import { BoundingBox } from "../../redux/types";
-import Category from "../../utils/interfaces/Category";
 import axios from "axios";
-import { Coordinates } from "../../utils/interfaces/OpenTripMapApi/QueryCity";
-/**
- * @param {PlacesApiProps} props
- *
- * Called, when following states change:
- * - Zoom out
- * - Category added
- * - Map moved
- */
+
+import Category from "../../utils/interfaces/Category";
+import {
+  CityIdentifier,
+  Coordinates,
+} from "../../utils/interfaces/OpenTripMapApi/QueryCity";
 
 export default class PlacesApi {
   private API_KEY: string = import.meta.env.VITE_2GIS_KEY;
+
+  private regionIdCache: Map<string, string> = new Map();
+  private categoryIdCache: Map<string, string> = new Map();
+
+  private radius: number = 40000;
 
   /**
 	 * 
@@ -27,77 +27,76 @@ export default class PlacesApi {
 						"name": "Москва",
 						"type": "region"
 					}
-				],
-				"total": 1
+				]
 			}
 		}
 	 * 
 	*/
 
   private async getRegionIdByName(cityName: string): Promise<string> {
-    const response = await fetch(
-      `https://catalog.api.2gis.com/2.0/region/search?q=${cityName}&key=${this.API_KEY}`
-    );
-    if (!response.ok) {
-      console.error("Error finding region:", response.statusText);
+    if (this.regionIdCache.has(cityName)) {
+      return this.regionIdCache.get(cityName)!;
     }
 
-    const data = await response.json();
-    const regionId: string = data.result.items[0].id;
-    return regionId;
+    try {
+      const response = await axios.get(
+        "https://catalog.api.2gis.com/2.0/region/search",
+        {
+          params: {
+            q: cityName,
+            key: this.API_KEY,
+          },
+        }
+      );
+      const regionId: string = response.data.result.items[0].id;
+      this.regionIdCache.set(cityName, regionId);
+      return regionId;
+    } catch (error) {
+      console.error("Error fetching catalog items:", error);
+      throw error;
+    }
   }
 
   private async getCategoryIdByName(
     name: string,
     regionId: string
   ): Promise<string> {
-    const response = await fetch(
-      `https://catalog.api.2gis.com/2.0/catalog/rubric/search?region_id=${regionId}&q=${name}&key=${this.API_KEY}`
-    );
-    if (!response.ok) {
-      console.error("Error finding region:", response.statusText);
+    if (this.categoryIdCache.has(name)) {
+      return this.categoryIdCache.get(name)!;
     }
 
-    const data = await response.json();
-    const categoryId: string = data.result.items[0].id;
-    return categoryId;
+    try {
+      const response = await axios.get(
+        "https://catalog.api.2gis.com/2.0/catalog/rubric/search",
+        {
+          params: {
+            region_id: regionId,
+            q: name,
+            key: this.API_KEY,
+          },
+        }
+      );
+      const categoryId: string = response.data.result.items[0].id;
+      this.categoryIdCache.set(name, categoryId);
+      return categoryId;
+    } catch (error) {
+      console.error("Error fetching catalog items:", error);
+      throw error;
+    }
   }
 
-  private boundingBoxToPoints(boundingBox: BoundingBox): {
-    point1: string;
-    point2: string;
-  } {
-    const { southWest, northEast } = boundingBox;
-    const point1 = `${southWest[0]},${northEast[1]}`;
-    const point2 = `${northEast[0]},${southWest[1]}`;
-
-    return { point1, point2 };
-  }
-
-  private async getCompaniesData(
-    cityName: string,
-    categories: Category[],
-    boundingBox: BoundingBox
-  ) {
-    const regionId: string = await this.getRegionIdByName(cityName);
-    const rubricIds = await Promise.all(
-      categories.map(
-        async (category) =>
-          await this.getCategoryIdByName(category.name, regionId)
-      )
-    );
-
-    const rubricIdsString = rubricIds.join(",");
-    const { point1, point2 } = this.boundingBoxToPoints(boundingBox);
+  private async getCompaniesData(city: CityIdentifier, category: Category) {
+    const regionId: string = await this.getRegionIdByName(city.name);
+    const rubricId = await this.getCategoryIdByName(category.name, regionId);
 
     try {
       const response = await axios.get(
         "https://catalog.api.2gis.com/3.0/items",
         {
           params: {
-            rubric_id: rubricIdsString,
-            point1: point1,
-            point2: point2,
+            rubric_id: rubricId,
+            point: `${city.lon}, ${city.lat}`,
+            radius: this.radius,
             key: this.API_KEY,
           },
         }
@@ -129,33 +128,28 @@ export default class PlacesApi {
   }
 
   public async getCompaniesLocations(
-    cityName: string,
-    categories: Category[],
-    boundingBox: BoundingBox
-  ) {
-    const companiesData = await this.getCompaniesData(
-      cityName,
-      categories,
-      boundingBox
-    );
+    city: CityIdentifier,
+    category: Category | null
+  ): Promise<Coordinates[] | undefined> {
+    if (!category) return;
+    const companiesData = await this.getCompaniesData(city, category);
 
     if (!companiesData.items) {
       console.error("No companies in category");
       return;
     }
 
-    const points: Coordinates[] = await Promise.all(
+    const locations: Coordinates[] = await Promise.all(
       companiesData.items.map(
         async (company: { full_name: string; address_name: string }) => {
           const response = await this.getPointByAddress(company.full_name);
-          if (response && response.items.length > 0) {
+          if (response && response.items) {
             return response.items[0].point;
           }
         }
       )
     );
-
-    return points;
+    return locations;
   }
 }
 
