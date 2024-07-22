@@ -1,61 +1,36 @@
 import { load } from "@2gis/mapgl";
-import { Map, Marker } from "@2gis/mapgl/types";
-import { useDispatch, useSelector } from "react-redux";
-import { memo, useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
+import { memo, useCallback, useEffect, useRef } from "react";
+import { Map as GisMap, Marker as GisMarker } from "@2gis/mapgl/types";
 
+import Marker from "./Marker";
 import style from "./MapPage.module.scss";
-import { RootState } from "../../../redux/types";
-import mapSlice from "../../../redux/slices/mapSlice";
-import { Coordinates } from "../../../utils/interfaces/OpenTripMapApi/QueryCity";
-// import Category from "../../../utils/interfaces/Category";
-import categoriesSlice from "../../../redux/slices/categoriesSlice";
 import PlacesApi from "../../api/2GisPlacesApi";
+import { RootState } from "../../../redux/types";
+import { useMapContext } from "../../../context/MapContext";
 
 const MapContent = memo(() => {
   return <div id="map-container" className={style.map__content}></div>;
 });
 
 const MapPage = memo(() => {
-  const dispatch = useDispatch();
-  const { city, zoom, boundingBox } = useSelector(
-    (state: RootState) => state.map
-  );
-  const mapRef = useRef<Map | null>(null);
-  // const [previousZoom, setPreviousZoom] = useState<number>(zoom);
+  const mapRef = useRef<GisMap | null>(null);
 
-  const { categoriesToAdd, categoriesToRemove } = useSelector(
+  const { categoryToAdd, categoryToRemove } = useSelector(
     (state: RootState) => state.categories
   );
+  const { markersDataCache, setMarkersDataCache } = useMapContext();
+  const { city, zoom } = useSelector((state: RootState) => state.map);
 
   const api = new PlacesApi();
-
+  const markerClass = new Marker();
   const API_KEY = "-";
   // const API_KEY = import.meta.env.VITE_2GIS_KEY;
 
-  /**
-   * Init 2Gis Map
-   */
   useEffect(() => {
-    const initializeMap = async () => {
-      const mapglAPI = await load();
-
-      mapRef.current = new mapglAPI.Map("map-container", {
-        center: [city.lon, city.lat],
-        zoom: zoom,
-        key: API_KEY,
-      });
-
-      resizeMap(mapRef.current);
-      updateBoundingBox();
-      mapRef.current.on("zoomend", handleZoomChange);
-      mapRef.current.on("moveend", handleMoveChange);
-    };
-
-    if (!mapRef.current) {
-      initializeMap();
-    } else {
-      mapRef.current.setCenter([city.lon, city.lat]);
-    }
+    !mapRef.current
+      ? initializeMap()
+      : mapRef.current.setCenter([city.lon, city.lat]);
 
     return () => {
       if (mapRef.current) {
@@ -65,49 +40,47 @@ const MapPage = memo(() => {
     };
   }, [city.lon]);
 
-  useEffect(() => {
-    if (categoriesToAdd.length === 0) return;
+  const setMarkers = useCallback(async () => {
+    if (!categoryToAdd) return;
 
-    async function getCompaniesInCategory() {
-      const locations: Coordinates[] | undefined =
-        await api.getCompaniesLocations(
-          city.name,
-          categoriesToAdd,
-          boundingBox
-        );
+    const markers = getFromCache(categoryToAdd.id);
 
-      if (locations)
-        locations.forEach((location: Coordinates) => {
-          addMarker(location);
-        });
-
-      dispatch(categoriesSlice.actions.resetCategoriesToAdd());
+    if (markers && markers.length !== 0) {
+      markers.forEach((marker) => marker.show());
+    } else {
+      const locations = await api.getCompaniesLocations(city, categoryToAdd);
+      if (mapRef.current && locations) {
+        const markers = await markerClass.getMarkers(mapRef.current, locations);
+        setCache(categoryToAdd.id, markers);
+      }
     }
+  }, [categoryToAdd]);
 
-    getCompaniesInCategory();
-  }, [categoriesToAdd]);
-
-  /**
-   * Remove new categories on Map
-   */
   useEffect(() => {
-    if (categoriesToRemove.length === 0) return;
+    setMarkers();
+  }, [setMarkers]);
 
-    dispatch(categoriesSlice.actions.resetCategoriesToRemove());
-  }, [categoriesToRemove]);
+  useEffect(() => {
+    if (!categoryToRemove) return;
+    const markers = getFromCache(categoryToRemove.id);
+    markerClass.removeMarkers(markers!);
+  }, [categoryToRemove]);
 
-  const resizeMap = (
-    map: Map,
-    width: string = "100%",
-    height: string = "100%"
-  ) => {
-    const mapCanvas = map.getCanvas();
-    const mapContainer = map.getContainer();
+  const initializeMap = async () => {
+    const mapglAPI = await load();
 
-    mapCanvas.style.width = width;
-    mapCanvas.style.height = height;
-    mapContainer.style.width = width;
-    mapContainer.style.height = height;
+    mapRef.current = new mapglAPI.Map("map-container", {
+      center: [city.lon, city.lat],
+      zoom: zoom,
+      key: API_KEY,
+    });
+
+    resizeMap(mapRef.current);
+  };
+
+  const resizeMap = (map: GisMap) => {
+    map.getCanvas().style.width = map.getContainer().style.width = "100%";
+    map.getCanvas().style.height = map.getContainer().style.height = "100%";
 
     map.invalidateSize();
 
@@ -116,64 +89,17 @@ const MapPage = memo(() => {
     });
   };
 
-  const handleMoveChange = () => {
-    updateBoundingBox();
+  const getFromCache = (categoryId: number) => {
+    const cacheKey = JSON.stringify({ city, categoryId });
+    return markersDataCache.get(cacheKey);
   };
 
-  const handleZoomChange = () => {
-    updateZoom();
-    updateBoundingBox();
-  };
-
-  const updateBoundingBox = () => {
-    if (mapRef.current) {
-      const bounds = mapRef.current.getBounds();
-
-      const serializedBounds = {
-        southWest: [...bounds.southWest],
-        northEast: [...bounds.northEast],
-      };
-
-      dispatch(mapSlice.actions.setBoundingBox(serializedBounds));
-    }
-  };
-
-  const updateZoom = () => {
-    if (mapRef.current) {
-      const newZoom = mapRef.current.getZoom();
-      // setPreviousZoom(newZoom);
-      dispatch(mapSlice.actions.setZoom(newZoom));
-    }
-  };
-
-  /**
-   * Called when:
-   * - Category added
-   * - Zoom out
-   * - Map moved
-   */
-  const addMarker = async (coords: Coordinates) => {
-    if (!mapRef.current) return;
-    const mapglAPI = await load();
-    const marker = new mapglAPI.Marker(mapRef.current, {
-      coordinates: [coords.lon, coords.lat],
+  const setCache = (categoryId: number, data: GisMarker[]) => {
+    const cacheKey = JSON.stringify({ city, categoryId });
+    setMarkersDataCache((prevCache) => {
+      return new Map(prevCache).set(cacheKey, data);
     });
-
-    marker.show();
   };
-
-  /**
-   * Called when:
-   * - Category removed
-   * - Zoom in
-   * - Map moved
-   */
-
-  // const removeMarkers = (category: Category[]) => {
-  //   if (mapRef.current && mapRef.current.getZoom() < previousZoom) {
-  //   }
-  //   category.forEach((category) => {});
-  // };
 
   return (
     <div className={style.map__wrapper}>
@@ -183,22 +109,4 @@ const MapPage = memo(() => {
 });
 
 export default MapPage;
-
-/*
-TODO: 
-- Строка поиска
-- Определение местоположения - https://docs.2gis.com/ru/mapgl/examples/layers/geolocation
-- Кнопка сохранить:
-	- Модалка: название
-
-МЕТКИ:
-- Добавление метки: 
-	- Изменение значка
-	- Добавление названия
-	- Добавление note
-	- Сохранение меток
-
-- Карта на всю ширину экрана
-
-*/
 
