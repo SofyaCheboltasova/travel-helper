@@ -2,9 +2,6 @@
 @import "../../../assets/styles/mixins.module.scss";
 
 .resources__wrapper {
-  @include offsets(1.5rem);
   @include flex(column, 1rem);
-
   flex: 1;
 }
-

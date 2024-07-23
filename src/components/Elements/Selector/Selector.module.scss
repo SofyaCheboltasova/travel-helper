@@ -5,7 +5,6 @@
 .selector__wrapper {
   @include flex(column, 1rem);
   @include size(100%);
-
   @extend %rectangle-default;
   @extend %scroll;
 }
@@ -16,8 +15,6 @@
   font: $font-main-medium;
   box-shadow: none;
   background-color: $color-main;
-
-  padding: 0;
 }
 
 .selector__list {
