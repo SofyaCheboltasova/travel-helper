@@ -1,11 +1,14 @@
 @import "../../../assets/styles/mixins.module.scss";
 @import "../../../assets/styles/consts.module.scss";
+@import "../../../assets/styles/placeholders.module.scss";
 
 .list {
-  @include size(100%);
+  @include size(100%, calc(100vh - 8rem));
   @include offsets(0 2rem);
   @include flex(column, 2rem);
   padding-bottom: 2rem;
+
+  @extend %scroll;
 }
 
 .hidden {

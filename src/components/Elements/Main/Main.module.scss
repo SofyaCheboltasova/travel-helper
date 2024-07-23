@@ -5,8 +5,7 @@
   @include size(100%, $max-h: 100vh);
   @include flex(column);
   @include borders();
-
-  @extend %scroll;
-
   background-color: $color-main;
+
+  overflow: hidden;
 }

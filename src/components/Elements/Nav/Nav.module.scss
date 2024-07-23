@@ -5,12 +5,11 @@
   @extend %nav;
 
   &_expanded {
-    @extend %scroll;
     padding-top: 0;
   }
 }
 
-.header {
+.searchBar {
   display: grid;
   grid-template-columns: 1fr 6fr;
   gap: 1rem;
