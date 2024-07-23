@@ -2,12 +2,25 @@
 
 .list {
   @include size(100%);
-
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 2rem;
 }
 
 .hidden {
   display: none;
+}
+
+.dividerContainer {
+  position: relative;
+  padding: 0;
+  margin: 10px 0;
+  width: 100%;
+}
+
+.divider {
+  width: 100%;
+  border: none;
+  border-top: 1px solid; /* Цвет устанавливается через inline стиль */
+  margin: 0;
 }
