@@ -4,7 +4,7 @@ import Modal from "../Modal/Modal";
 import style from "./List.module.scss";
 
 function generateColor(index: number): string {
-  const hue = (index * 137.508) % 360; // золотое сечение
+  const hue = (index * 137.508) % 360;
   return `hsl(${hue}, 50%, 60%)`;
 }
 
@@ -31,7 +31,7 @@ export default function List({ elements }: { elements: ModalProps[] }) {
   }));
 
   const isNewTheme = (curId: number) => {
-    if (curId === 0) return false;
+    if (curId === 0) return true;
     const prevId: number = curId - 1;
     return elementsWithColors[prevId].theme !== elementsWithColors[curId].theme;
   };
@@ -42,9 +42,8 @@ export default function List({ elements }: { elements: ModalProps[] }) {
         <>
           {isNewTheme(i) && (
             <li
-              className={
-                style.dividerContainer && data.hidden ? style.hidden : ""
-              }
+              key={`divider-${data.id}`}
+              className={data.hidden ? style.hidden : ""}
             >
               <hr
                 className={style.divider}
