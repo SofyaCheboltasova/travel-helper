@@ -7,10 +7,10 @@ import Button from "../Button/Button";
 import ExpandedNav from "./ExpandedNav";
 import Selector from "../Selector/Selector";
 import { pages } from "../../../assets/consts/consts";
+import Category from "../../../utils/interfaces/Category";
 import PlacesList from "../../Pages/PlacesList/PlacesList";
 import searchSlice from "../../../redux/slices/searchSlice";
 import categoriesSlice from "../../../redux/slices/categoriesSlice";
-import Category from "../../../utils/interfaces/Category";
 
 export default function Nav() {
   const navigate = useNavigate();

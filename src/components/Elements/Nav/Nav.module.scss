@@ -3,5 +3,15 @@
 
 .nav {
   @extend %nav;
+
+  &_expanded {
+    @extend %scroll;
+    padding-top: 0;
+  }
 }
 
+.header {
+  display: grid;
+  grid-template-columns: 1fr 6fr;
+  gap: 1rem;
+}
