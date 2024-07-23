@@ -9,6 +9,7 @@ import { RootState } from "../../../redux/types";
 import mapSlice from "../../../redux/slices/mapSlice";
 import OpenTripMapApi from "../../api/OpenTripMapApi";
 import { CityIdentifier } from "../../../utils/interfaces/OpenTripMapApi/QueryCity";
+import Loader from "../Loader/Loader";
 
 interface ExpandedNavProps {
   content: ReactElement | undefined;
@@ -19,11 +20,13 @@ interface ExpandedNavProps {
 export default function ExpandedNav(props: ExpandedNavProps) {
   const { city } = useSelector((state: RootState) => state.map);
   const [cityName, setCity] = useState<string>(city.name);
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   const api = new OpenTripMapApi();
 
   useEffect(() => {
     async function fetchCityCoordinates() {
+      setIsLoading(true);
       try {
         const fetchedCityData: CityIdentifier = await api.getCityCoordinates(
           cityName
@@ -32,6 +35,7 @@ export default function ExpandedNav(props: ExpandedNavProps) {
       } catch (error) {
         console.error("Error fetching city data");
       }
+      setIsLoading(false);
     }
     if (cityName) fetchCityCoordinates();
   }, [cityName]);
@@ -58,7 +62,7 @@ export default function ExpandedNav(props: ExpandedNavProps) {
           }
         />
       </div>
-      {props.content}
+      {isLoading ? <Loader text={"Загружаем места..."} /> : props.content}
     </nav>
   );
 }

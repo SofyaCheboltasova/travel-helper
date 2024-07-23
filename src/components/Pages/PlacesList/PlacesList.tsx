@@ -10,27 +10,23 @@ import {
 } from "../../../utils/interfaces/OpenTripMapApi/QueryPlace";
 import List from "../../Elements/List/List";
 import ModalProps from "../../../utils/interfaces/ModalProps";
-import Loader from "../../Elements/Loader/Loader";
 
 export default function PlacesList() {
   const dispatch = useDispatch();
   const { currentPlaces } = useSelector((state: RootState) => state.search);
   const { city } = useSelector((state: RootState) => state.map);
-  const [isLoading, setIsLoading] = useState(true);
   const [places, setPlacess] = useState<ModalProps[]>();
 
   const api = new OpenTripMapApi();
 
   useEffect(() => {
     async function fetchPlacesInRadius() {
-      setIsLoading(true);
       try {
         const allPlaces: PlaceIdentifier[] = await api.getAllPlaces(city);
         dispatch(searchSlice.actions.setPlaces(allPlaces));
       } catch (error) {
         console.error("Error fetching places in radius", error);
       } finally {
-        setIsLoading(false);
       }
     }
 
@@ -76,11 +72,6 @@ export default function PlacesList() {
       image: preview?.sources || "https://via.placeholder.com/150",
     };
   };
-
-  if (isLoading) {
-    return <Loader text={"Загружаем места..."} />;
-  } else {
-    return places && <List elements={places} />;
-  }
+  return places && <List elements={places} />;
 }
 

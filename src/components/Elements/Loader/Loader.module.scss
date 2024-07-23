@@ -1,11 +1,9 @@
 @import "../../../assets/styles/mixins.module.scss";
 
 .loader {
-  @include relativePosition(50%, 50%);
-
-  text-align: center;
+  @include flex($justify-content: center, $align-items: center);
+  flex: 1;
   font-weight: 500;
   margin: 0;
-  transform: translate(-50%, -50%);
 }
 
