@@ -1,9 +1,10 @@
 enum CategoryEnum {
   Museums = "музеи",
-  Entertainment = "развлечения",
-  Tours = "экскурсии",
-  Monuments = "памятники",
-  Viewpoints = "смотровые площадки",
+  Entertainment = "аттракционы и клубы",
+  Beach = "пляжи и речные прогулки",
+  Mall = "торговые центры",
+  Food = "еда",
 }
 
 export default CategoryEnum;
+
