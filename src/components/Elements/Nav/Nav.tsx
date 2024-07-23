@@ -6,7 +6,7 @@ import style from "./Nav.module.scss";
 import Button from "../Button/Button";
 import ExpandedNav from "./ExpandedNav";
 import Selector from "../Selector/Selector";
-import { pages } from "../../../assets/consts/pages";
+import { pages } from "../../../assets/consts/consts";
 import PlacesList from "../../Pages/PlacesList/PlacesList";
 import searchSlice from "../../../redux/slices/searchSlice";
 import categoriesSlice from "../../../redux/slices/categoriesSlice";

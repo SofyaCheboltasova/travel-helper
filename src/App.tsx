@@ -1,15 +1,17 @@
+import store from "./redux/store";
+import { Provider } from "react-redux";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
 import style from "./App.module.scss";
-import { pages } from "./assets/consts/pages";
+
+import { pages } from "./assets/consts/consts";
 import Nav from "./components/Elements/Nav/Nav";
 import Main from "./components/Elements/Main/Main";
-import MapComponent from "./components/Pages/MapPage/MapPage";
-import ResourcesPage from "./components/Pages/ResourcesPage/ResourcesPage";
-import WelcomePage from "./components/Pages/WelcomePage/WelcomePage";
-import { Provider } from "react-redux";
-import store from "./redux/store";
-import SightsPage from "./components/Pages/SightsPage/SightsPage";
 import { MapProvider } from "./context/MapContext";
+import WikiFrame from "./components/Pages/WikiFrame/WikiFrame";
+import MapComponent from "./components/Pages/MapPage/MapPage";
+import WelcomePage from "./components/Pages/WelcomePage/WelcomePage";
+import ResourcesPage from "./components/Pages/ResourcesPage/ResourcesPage";
 
 function App() {
   return (
@@ -32,7 +34,7 @@ function App() {
             />
             <Route
               path={pages.savedRoutes.path}
-              element={<Main children={<SightsPage />} />}
+              element={<Main children={<WikiFrame />} />}
             />
             <Route
               path={pages.tickets.path}
