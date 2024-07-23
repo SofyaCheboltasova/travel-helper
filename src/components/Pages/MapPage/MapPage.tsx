@@ -24,8 +24,8 @@ const MapPage = memo(() => {
 
   const api = new PlacesApi();
   const markerClass = new Marker();
-  const API_KEY = "-";
-  // const API_KEY = import.meta.env.VITE_2GIS_KEY;
+  // const API_KEY = "-";
+  const API_KEY = import.meta.env.VITE_2GIS_KEY;
 
   useEffect(() => {
     !mapRef.current
@@ -50,7 +50,11 @@ const MapPage = memo(() => {
     } else {
       const locations = await api.getCompaniesLocations(city, categoryToAdd);
       if (mapRef.current && locations) {
-        const markers = await markerClass.getMarkers(mapRef.current, locations);
+        const markers = await markerClass.getMarkers(
+          mapRef.current,
+          locations,
+          categoryToAdd.iconPath
+        );
         setCache(categoryToAdd.id, markers);
       }
     }
