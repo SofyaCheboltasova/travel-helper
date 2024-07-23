@@ -23,8 +23,8 @@
 
 %nav {
   @include size(30vw, 100vh);
-  @include offsets(2rem);
   @include flex(column, 2rem);
+  @include offsets(1.5rem);
 
   border-right: $box-border-hover;
   box-shadow: $box-shadow-default;

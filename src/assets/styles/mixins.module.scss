@@ -32,3 +32,15 @@
   border-radius: $radius;
 }
 
+@mixin relativePosition($top: 0, $left: 0) {
+  position: relative;
+  top: $top;
+  left: $left;
+}
+
+@mixin stickyPosition($top: 0) {
+  position: sticky;
+  z-index: 1;
+  top: $top;
+}
+
