@@ -9,6 +9,7 @@ import SearchBar from "../../Elements/SearchBar/SearchBar";
 import ModalProps from "../../../utils/interfaces/ModalProps";
 import List from "../../Elements/List/List";
 import Loader from "../../Elements/Loader/Loader";
+import ChannelData from "../../../utils/interfaces/TelegramApi/ChannelData";
 
 export default function ResourcesPage() {
   const [channelsData, setChannelsData] = useState<ModalProps[]>([]);
@@ -24,13 +25,14 @@ export default function ResourcesPage() {
         const channelsData = await Promise.all(
           resources.map((resource) => api.getChannelData(resource))
         );
-
-        const enhancedChannelsData = channelsData.flat().map((channel) => ({
-          ...channel,
-          onClick: (link: string) => {
-            window.open(link, "_blank");
-          },
-        }));
+        const enhancedChannelsData: ModalProps[] = channelsData
+          .filter((data): data is ChannelData => !!data?.id)
+          .map((channel) => ({
+            ...channel,
+            onClick: (link: string) => {
+              window.open(link, "_blank");
+            },
+          }));
 
         setChannelsData(enhancedChannelsData);
       } catch (error) {
@@ -83,7 +85,9 @@ export default function ResourcesPage() {
 
   return (
     <div className={style.resources__wrapper} key="resources">
+      {/* <div className={style.resources__header}> */}
       <Header children={<SearchBar onChange={handleSearchInput} />} />
+      {/* </div> */}
       <List elements={channelsData} />
     </div>
   );
