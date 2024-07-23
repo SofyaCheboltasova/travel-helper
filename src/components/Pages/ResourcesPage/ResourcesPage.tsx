@@ -85,9 +85,10 @@ export default function ResourcesPage() {
 
   return (
     <div className={style.resources__wrapper} key="resources">
-      {/* <div className={style.resources__header}> */}
-      <Header children={<SearchBar onChange={handleSearchInput} />} />
-      {/* </div> */}
+      <Header
+        borders={true}
+        children={<SearchBar onChange={handleSearchInput} />}
+      />
       <List elements={channelsData} />
     </div>
   );

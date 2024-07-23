@@ -42,20 +42,22 @@ export default function ExpandedNav(props: ExpandedNavProps) {
 
   return (
     <nav className={`${style.nav} ${style.nav_expanded}`}>
-      <Header
-        children={
-          <>
-            <div className={style.header}>
-              <Button text={"<"} onClick={props.onClose} />
-              <SearchBar
-                onKeyDown={handleEnterPressed}
-                placeholder={props.placeholder || "Введите город"}
-              />
-            </div>
-            <h2>{city.name}</h2>
-          </>
-        }
-      />
+      <div className={style.header}>
+        <Header
+          children={
+            <>
+              <div className={style.searchBar}>
+                <Button text={"<"} onClick={props.onClose} />
+                <SearchBar
+                  onKeyDown={handleEnterPressed}
+                  placeholder={props.placeholder || "Введите город"}
+                />
+              </div>
+              <h2>{city.name}</h2>
+            </>
+          }
+        />
+      </div>
       {props.content}
     </nav>
   );
