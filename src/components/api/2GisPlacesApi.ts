@@ -73,7 +73,7 @@ export default class PlacesApi {
 
   private async getCompaniesData(city: CityIdentifier, category: Category) {
     /*
-		Change rubric_id: category.rubricId to rubricId to make requests
+		Change `rubric_id: category.rubricId` to `rubricId` to make API requests
 			const regionId: string = await this.getRegionIdByName(city.name);
     	const rubricId = await this.getCategoryIdByName(category.name, regionId);
 		*/

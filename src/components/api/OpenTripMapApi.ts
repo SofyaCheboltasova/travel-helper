@@ -1,5 +1,5 @@
+import axios from "axios";
 import {
-  CityParams,
   CityResponse,
   Coordinates,
 } from "../../utils/interfaces/OpenTripMapApi/QueryCity";
@@ -17,13 +17,11 @@ export default class OpenTripMapApi {
   private lang: Lang = "ru";
   private apiKey: string;
   private radiusParams: RadiusParams;
-  private cityParams: CityParams;
 
-  private url: string = `http://api.opentripmap.com/0.1/${this.lang}/places/`;
+  private url: string = `http://api.opentripmap.com/0.1/${this.lang}/places`;
 
   constructor() {
     this.apiKey = import.meta.env.VITE_OPENTRIP_KEY;
-    this.cityParams = { name: "Москва" };
     this.radiusParams = {
       radius: 10000,
       lon: 0,
@@ -35,93 +33,92 @@ export default class OpenTripMapApi {
     };
   }
 
-  private async handleFetch(url: string) {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(response.statusText);
+  private sortByPopularity(places: RadiusResponse[] | undefined) {
+    const sortedPlaces =
+      places &&
+      places
+        .sort((a, b) => {
+          const rateOrder = ["3", "3h", "2", "2h", "1", "1h", "0"];
+          return rateOrder.indexOf(b.rate) - rateOrder.indexOf(a.rate);
+        })
+        .map((place) => ({ xid: place.xid, point: place.point }));
+
+    return sortedPlaces;
+  }
+
+  private async fetchData<T>(endpoint: string, params?: {}) {
+    try {
+      const response = await axios.get(`${this.url}/${endpoint}`, {
+        params: {
+          apikey: this.apiKey,
+          ...params,
+        },
+      });
+
+      const data: T = response.data;
+
+      if (!data) {
+        throw new Error(`Error fetching data from ${this.url}/${endpoint}`);
+      }
+
+      return data;
+    } catch (error) {
+      console.error(error);
     }
-    const data = await response.json();
-    return data;
-  }
-
-  private createQueryUrl(
-    endpoint: string,
-    params?: RadiusParams | CityParams
-  ): string {
-    const filteredParams = params
-      ? Object.entries(params)
-          .filter(([, value]) => value)
-          .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
-      : "";
-
-    const queryParams = new URLSearchParams(filteredParams);
-    queryParams.append("apikey", this.apiKey);
-
-    return `${this.url}${endpoint}?${queryParams.toString()}`;
-  }
-
-  private setQueryRadiusParams(coords: Coordinates, radius?: number) {
-    this.radiusParams = {
-      ...this.radiusParams,
-      lat: coords.lat,
-      lon: coords.lon,
-      radius: radius || 1000,
-    };
-  }
-
-  private async fetchPlaceData(xid: string): Promise<PlaceResponse> {
-    const queryUrl = this.createQueryUrl(`xid/${xid}`);
-    const placeResponse: PlaceResponse = await this.handleFetch(queryUrl);
-    return placeResponse;
   }
 
   public async getAllPlaces(
     coords: Coordinates,
     radius?: number
-  ): Promise<PlaceIdentifier[]> {
-    this.setQueryRadiusParams(coords, radius);
-    const queryUrl = this.createQueryUrl("radius", this.radiusParams);
+  ): Promise<PlaceIdentifier[] | undefined> {
+    const params = {
+      ...this.radiusParams,
+      lat: coords.lat,
+      lon: coords.lon,
+      radius: radius || 1000,
+    };
 
-    const places: RadiusResponse[] = await this.handleFetch(queryUrl);
+    const placesInRadius: RadiusResponse[] | undefined = await this.fetchData<
+      RadiusResponse[]
+    >("radius", params);
 
-    const sortedPlaces = places
-      .sort((a, b) => {
-        const rateOrder = ["3", "3h", "2", "2h", "1", "1h", "0"];
-        return rateOrder.indexOf(b.rate) - rateOrder.indexOf(a.rate);
-      })
-      .map((place) => ({ xid: place.xid, point: place.point }));
+    const sortedPlaces = this.sortByPopularity(placesInRadius);
     return sortedPlaces;
+  }
+
+  private async getPlaceData(xid: string): Promise<PlaceResponse | undefined> {
+    const placeData: PlaceResponse | undefined =
+      await this.fetchData<PlaceResponse>(`xid/${xid}`);
+    return placeData;
   }
 
   public async getPlacesData(curPlacesIdentifiers: PlaceIdentifier[]) {
     const fetchedPlacesData = await Promise.allSettled(
-      curPlacesIdentifiers.map((place) => this.fetchPlaceData(place.xid))
+      curPlacesIdentifiers.map((place) => this.getPlaceData(place.xid))
     );
 
     const placesData: PlaceResponse[] = fetchedPlacesData
       .filter((data) => data.status === "fulfilled")
-      .map((data) => (data as PromiseFulfilledResult<PlaceResponse>).value);
+      .map((data) => data.value)
+      .filter((data) => data !== undefined);
+
+    console.error("LALALALALALA");
 
     return placesData;
   }
 
-  private setQueryCityParams(name: string) {
-    this.cityParams = {
-      ...this.cityParams,
-      name: name,
-    };
-  }
+  public async getCityCoordinates(cityName: string) {
+    const params = { name: cityName };
+    const cityData: CityResponse | undefined =
+      await this.fetchData<CityResponse>("geoname", params);
 
-  public async getCityCoordinates(name: string) {
-    this.setQueryCityParams(name);
-    const queryUrl = this.createQueryUrl("geoname", this.cityParams);
-    const city: CityResponse = await this.handleFetch(queryUrl);
-
-    return {
-      name: city.name,
-      lon: city.lon,
-      lat: city.lat,
-    };
+    return cityData
+      ? {
+          name: cityData.name,
+          lon: cityData.lon,
+          lat: cityData.lat,
+        }
+      : undefined;
   }
 }
 
