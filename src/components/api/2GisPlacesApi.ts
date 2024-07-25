@@ -1,10 +1,7 @@
 import axios from "axios";
 
 import Category from "../../utils/interfaces/Category";
-import {
-  CityIdentifier,
-  Coordinates,
-} from "../../utils/interfaces/OpenTripMapApi/QueryCity";
+import { CityIdentifier } from "../../utils/interfaces/OpenTripMapApi/QueryCity";
 
 export default class PlacesApi {
   private API_KEY: string = import.meta.env.VITE_2GIS_KEY;
@@ -12,7 +9,7 @@ export default class PlacesApi {
   private regionIdCache: Map<string, string> = new Map();
   private categoryIdCache: Map<string, string> = new Map();
 
-  private radius: number = 40000;
+  private radius: number = 10000;
 
   private async getRegionIdByName(cityName: string): Promise<string> {
     if (this.regionIdCache.has(cityName)) {
@@ -71,7 +68,7 @@ export default class PlacesApi {
     }
   }
 
-  private async getCompaniesData(city: CityIdentifier, category: Category) {
+  public async getCompaniesData(city: CityIdentifier, category: Category) {
     /*
 		Change `rubric_id: category.rubricId` to `rubricId` to make API requests
 			const regionId: string = await this.getRegionIdByName(city.name);
@@ -85,6 +82,8 @@ export default class PlacesApi {
           params: {
             rubric_id: category.rubricId,
             point: `${city.lon}, ${city.lat}`,
+            fields:
+              "items.point,items.full_address_name,items.description,items.external_content",
             radius: this.radius,
             key: this.API_KEY,
           },
@@ -95,48 +94,6 @@ export default class PlacesApi {
       console.error("No companies in category:", error);
       throw error;
     }
-  }
-
-  private async getPointByAddress(name: string, address: string) {
-    try {
-      const response = await axios.get(
-        "https://catalog.api.2gis.com/3.0/items/geocode",
-        {
-          params: {
-            q: `${name} ${address}`,
-            fields: "items.point",
-            key: this.API_KEY,
-          },
-        }
-      );
-      return response.data.result;
-    } catch (error) {
-      console.error("Error fetching catalog items:", error);
-      throw error;
-    }
-  }
-
-  public async getCompaniesLocations(
-    city: CityIdentifier,
-    category: Category | null
-  ): Promise<Coordinates[] | undefined> {
-    if (!category) return;
-    const companiesData = await this.getCompaniesData(city, category);
-
-    const locations: Coordinates[] = await Promise.all(
-      companiesData.map(
-        async (company: { name: string; address_name: string }) => {
-          const response = await this.getPointByAddress(
-            company.name,
-            company.address_name
-          );
-          if (response && response.items) {
-            return response.items[0].point;
-          }
-        }
-      )
-    );
-    return locations;
   }
 }
 

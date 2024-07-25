@@ -28,10 +28,10 @@ export default function ExpandedNav(props: ExpandedNavProps) {
     async function fetchCityCoordinates() {
       setIsLoading(true);
       try {
-        const fetchedCityData: CityIdentifier = await api.getCityCoordinates(
-          cityName
-        );
-        dispatch(mapSlice.actions.setCity(fetchedCityData));
+        const fetchedCityData: CityIdentifier | undefined =
+          await api.getCityCoordinates(cityName);
+        if (fetchedCityData)
+          dispatch(mapSlice.actions.setCity(fetchedCityData));
       } catch (error) {
         console.error("Error fetching city data");
       }
@@ -66,4 +66,3 @@ export default function ExpandedNav(props: ExpandedNavProps) {
     </nav>
   );
 }
-
