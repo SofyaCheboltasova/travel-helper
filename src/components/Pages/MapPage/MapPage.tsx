@@ -1,61 +1,60 @@
-import { load } from "@2gis/mapgl";
 import { useSelector } from "react-redux";
 import { memo, useCallback, useEffect, useRef } from "react";
 import { Map as GisMap, Marker as GisMarker } from "@2gis/mapgl/types";
 
-import Marker from "./Marker";
+import Marker, { CompanyData } from "./Marker";
 import style from "./MapPage.module.scss";
 import PlacesApi from "../../api/2GisPlacesApi";
 import { RootState } from "../../../redux/types";
 import { useMapContext } from "../../../context/MapContext";
+import { load } from "@2gis/mapgl";
 
 const MapContent = memo(() => {
   return <div id="map-container" className={style.map__content}></div>;
 });
 
 const MapPage = memo(() => {
-  const mapRef = useRef<GisMap | null>(null);
-
+  const { markersDataCache, setMarkersDataCache } = useMapContext();
+  const { city, zoom } = useSelector((state: RootState) => state.map);
   const { categoryToAdd, categoryToRemove } = useSelector(
     (state: RootState) => state.categories
   );
-  const { markersDataCache, setMarkersDataCache } = useMapContext();
-  const { city, zoom } = useSelector((state: RootState) => state.map);
+
+  const mapRef = useRef<GisMap>();
 
   const api = new PlacesApi();
   const markerClass = new Marker();
-  // const API_KEY = "-";
   const API_KEY = import.meta.env.VITE_2GIS_KEY;
+  const MAP_STYLE_ID = "1b42a0a1-e85f-45c2-8d7b-693baf76490f";
 
   useEffect(() => {
-    !mapRef.current
-      ? initializeMap()
-      : mapRef.current.setCenter([city.lon, city.lat]);
-
-    return () => {
-      if (mapRef.current) {
-        mapRef.current.destroy();
-        mapRef.current = null;
-      }
-    };
+    if (!mapRef.current) {
+      initializeMap();
+    } else {
+      setMapLocation();
+    }
+    mapRef.current && resizeMap(mapRef.current);
   }, [city.lon]);
 
   const setMarkers = useCallback(async () => {
     if (!categoryToAdd) return;
 
-    const markers = getFromCache(categoryToAdd.id);
+    const markers = getMarkersFromCache(categoryToAdd.id);
 
-    if (markers && markers.length !== 0) {
+    if (markers && markers.length) {
       markers.forEach((marker) => marker.show());
     } else {
-      const locations = await api.getCompaniesLocations(city, categoryToAdd);
-      if (mapRef.current && locations) {
+      const companies = await api.getCompaniesData(city, categoryToAdd);
+
+      if (mapRef.current && companies) {
         const markers = await markerClass.getMarkers(
           mapRef.current,
-          locations,
-          categoryToAdd.iconPath
+          companies,
+          categoryToAdd.iconPath,
+          handleMarkerClick
         );
-        setCache(categoryToAdd.id, markers);
+
+        setMarkersToCache(categoryToAdd.id, markers);
       }
     }
   }, [categoryToAdd]);
@@ -66,20 +65,22 @@ const MapPage = memo(() => {
 
   useEffect(() => {
     if (!categoryToRemove) return;
-    const markers = getFromCache(categoryToRemove.id);
+    const markers = getMarkersFromCache(categoryToRemove.id);
     markerClass.removeMarkers(markers!);
   }, [categoryToRemove]);
 
   const initializeMap = async () => {
     const mapglAPI = await load();
-
     mapRef.current = new mapglAPI.Map("map-container", {
       center: [city.lon, city.lat],
       zoom: zoom,
       key: API_KEY,
+      style: MAP_STYLE_ID, // custom style for faster loading
+      disableRotationByUserInteraction: true,
+      disablePitchByUserInteraction: true,
+      trafficControl: false,
+      floorControl: false,
     });
-
-    resizeMap(mapRef.current);
   };
 
   const resizeMap = (map: GisMap) => {
@@ -93,16 +94,27 @@ const MapPage = memo(() => {
     });
   };
 
-  const getFromCache = (categoryId: number) => {
+  const setMapLocation = () => {
+    if (mapRef.current) {
+      mapRef.current.setCenter([city.lon, city.lat]);
+      mapRef.current.setZoom(zoom);
+    }
+  };
+
+  const getMarkersFromCache = (categoryId: number) => {
     const cacheKey = JSON.stringify({ city, categoryId });
     return markersDataCache.get(cacheKey);
   };
 
-  const setCache = (categoryId: number, data: GisMarker[]) => {
+  const setMarkersToCache = (categoryId: number, data: GisMarker[]) => {
     const cacheKey = JSON.stringify({ city, categoryId });
     setMarkersDataCache((prevCache) => {
       return new Map(prevCache).set(cacheKey, data);
     });
+  };
+
+  const handleMarkerClick = (marker: CompanyData) => {
+    console.error(marker);
   };
 
   return (
