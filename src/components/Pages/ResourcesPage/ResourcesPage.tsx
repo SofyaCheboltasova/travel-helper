@@ -5,51 +5,55 @@ import resources from "../../../assets/json/resources.json";
 
 import TelegramApi from "../../api/TelegramApi";
 import Header from "../../Elements/Header/Header";
+import Loader from "../../Elements/Loader/Loader";
 import SearchBar from "../../Elements/SearchBar/SearchBar";
 import List, { ListProps } from "../../Elements/List/List";
-import Loader from "../../Elements/Loader/Loader";
+import ChannelData from "../../../utils/interfaces/TelegramApi/ChannelData";
 
 export default function ResourcesPage() {
   const [channelsData, setChannelsData] = useState<ListProps[]>([]);
   const [searchInput, setSearchInput] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
+  const api = new TelegramApi();
 
   useEffect(() => {
-    const api = new TelegramApi();
-
-    async function fetchChannelsData() {
-      setIsLoading(true);
-      try {
-        const channelsData = await Promise.all(
-          resources.map((resource) => api.getChannelData(resource))
-        );
-
-        const channelsDataFiltered = channelsData.filter(
-          (channelData) => channelData !== undefined
-        );
-        const channelsListProps = channelsDataFiltered.map((channelData) => {
-          return {
-            modal: {
-              ...channelData,
-              onClick: (link: string) => window.open(link, "_blank"),
-            },
-          };
-        });
-        setChannelsData(channelsListProps);
-      } catch (error) {
-        console.error("Error fetching channel data");
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    if (resources.length > 0) {
-      fetchChannelsData();
-    }
+    resources && fetchChannelsData();
   }, []);
 
   useEffect(() => {
-    const hiddenData: ListProps[] = channelsData.map((data) => {
+    const channels: ListProps[] = hideChannels();
+    setChannelsData(channels);
+  }, [searchInput]);
+
+  const fetchChannelsData = async () => {
+    setIsLoading(true);
+    try {
+      const channelsData = await Promise.all(
+        resources.map((resource) => api.getChannelData(resource))
+      );
+      const channelsListProps = getListProps(channelsData);
+      setChannelsData(channelsListProps);
+    } catch (error) {
+      console.error("Error fetching channel data");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getListProps = (channelsData: (ChannelData | undefined)[]) => {
+    const filteredData = channelsData.filter((c) => !!c);
+    const channelsListProps = filteredData.map((channelData) => {
+      const updatedModal = {
+        ...channelData,
+        onClick: (link: string) => window.open(link, "_blank"),
+      };
+      return { modal: updatedModal };
+    });
+    return channelsListProps;
+  };
+
+  const hideChannels = () => {
+    const newData = channelsData.map((data) => {
       const isInputEmpty = searchInput.trim() === "";
       if (isInputEmpty) return { ...data, hidden: false };
 
@@ -63,8 +67,8 @@ export default function ResourcesPage() {
       return { modal: { ...data.modal }, hidden: !isInputMatch };
     });
 
-    setChannelsData(hiddenData);
-  }, [searchInput]);
+    return newData;
+  };
 
   const isSubstrInTexts = (substring: string, texts: string[]): boolean => {
     const isSubstrInTexts = texts.reduce((sum, text) => {

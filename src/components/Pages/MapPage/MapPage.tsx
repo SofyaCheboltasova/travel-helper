@@ -1,24 +1,24 @@
 import { useDispatch, useSelector } from "react-redux";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Map as GisMap, Marker as GisMarker } from "@2gis/mapgl/types";
+import { load } from "@2gis/mapgl";
 
-import Marker, { CompanyData } from "./Marker";
 import style from "./MapPage.module.scss";
 import styleModal from "./MapPage.module.scss";
 
 import PlacesApi from "../../api/2GisPlacesApi";
 import { RootState } from "../../../redux/types";
-import { useMapContext } from "../../../context/MapContext";
-import { load } from "@2gis/mapgl";
 import Modal from "../../Elements/Modal/Modal";
+import Marker, { CompanyData } from "./Marker";
+import { useMapContext } from "../../../context/MapContext";
 import ModalProps from "../../../utils/interfaces/ModalProps";
 import categoriesSlice from "../../../redux/slices/categoriesSlice";
 
-const MapContent = memo(() => {
+const MapContent = () => {
   return <div id="map-container" className={style.map__content}></div>;
-});
+};
 
-const MapPage = memo(() => {
+const MapPage = () => {
   const { markersDataCache, setMarkersDataCache } = useMapContext();
   const { city, zoom } = useSelector((state: RootState) => state.map);
   const dispatch = useDispatch();
@@ -77,6 +77,7 @@ const MapPage = memo(() => {
 
   useEffect(() => {
     if (!categoryToRemove) return;
+
     const markers = getMarkersFromCache(categoryToRemove.id);
     markerClass.removeMarkers(markers!);
 
@@ -85,15 +86,12 @@ const MapPage = memo(() => {
 
   const initializeMap = async () => {
     const mapglAPI = await load();
+
     mapRef.current = new mapglAPI.Map("map-container", {
       center: [city.lon, city.lat],
       zoom: zoom,
       key: API_KEY,
       style: MAP_STYLE_ID, // custom style for faster loading
-      disableRotationByUserInteraction: true,
-      disablePitchByUserInteraction: true,
-      trafficControl: false,
-      floorControl: false,
     });
   };
 
@@ -122,11 +120,8 @@ const MapPage = memo(() => {
       theme: marker.rubrics[0].name,
       image: marker.external_content[0].main_photo_url,
       opened: true,
-      onClick: () => {
-        setOpenedModal(null);
-      },
+      onClick: () => setOpenedModal(null),
     };
-
     setOpenedModal(modalProps);
   };
 
@@ -139,7 +134,7 @@ const MapPage = memo(() => {
       </div>
     </div>
   );
-});
+};
 
 export default MapPage;
 

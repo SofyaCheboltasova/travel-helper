@@ -25,20 +25,20 @@ export default function ExpandedNav(props: ExpandedNavProps) {
   const api = new OpenTripMapApi();
 
   useEffect(() => {
-    async function fetchCityCoordinates() {
-      setIsLoading(true);
-      try {
-        const fetchedCityData: CityIdentifier | undefined =
-          await api.getCityCoordinates(cityName);
-        if (fetchedCityData)
-          dispatch(mapSlice.actions.setCity(fetchedCityData));
-      } catch (error) {
-        console.error("Error fetching city data");
-      }
-      setIsLoading(false);
-    }
-    if (cityName) fetchCityCoordinates();
+    cityName && fetchCityCoordinates();
   }, [cityName]);
+
+  const fetchCityCoordinates = async () => {
+    setIsLoading(true);
+    try {
+      const fetchedCityData: CityIdentifier | undefined =
+        await api.getCityCoordinates(cityName);
+      fetchedCityData && dispatch(mapSlice.actions.setCity(fetchedCityData));
+    } catch (error) {
+      console.error("Error fetching city data");
+    }
+    setIsLoading(false);
+  };
 
   const handleEnterPressed = (city: string) => {
     if (city) setCity(city);

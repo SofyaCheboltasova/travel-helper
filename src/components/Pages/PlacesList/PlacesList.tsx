@@ -19,36 +19,34 @@ export default function PlacesList() {
   const api = new OpenTripMapApi();
 
   useEffect(() => {
-    async function getAllPlaces() {
-      try {
-        const allPlaces: PlaceIdentifier[] | [] = await api.getAllPlaces(city);
-        allPlaces && dispatch(searchSlice.actions.setPlaces(allPlaces));
-      } catch (error) {
-        console.error("Error fetching places in radius", error);
-      }
-    }
-
     getAllPlaces();
   }, [city.lon]);
 
   useEffect(() => {
-    async function getCurrentPlacesData() {
-      try {
-        const curPlacesData: PlaceResponse[] = await api.getPlacesData(
-          currentPlaces!
-        );
-        const listProps: ListProps[] = curPlacesData.map((p) =>
-          getListProps(p)
-        );
-
-        setPlaces(listProps);
-        dispatch(searchSlice.actions.resetCurrentPlaces());
-      } catch (error) {
-        console.error("Error current places data", error);
-      }
-    }
     currentPlaces && getCurrentPlacesData();
   }, [currentPlaces]);
+
+  const getAllPlaces = async () => {
+    try {
+      const allPlaces: PlaceIdentifier[] | [] = await api.getAllPlaces(city);
+      allPlaces && dispatch(searchSlice.actions.setPlaces(allPlaces));
+    } catch (error) {
+      console.error("Error fetching places in radius", error);
+    }
+  };
+
+  const getCurrentPlacesData = async () => {
+    try {
+      const curPlacesData: PlaceResponse[] = await api.getPlacesData(
+        currentPlaces!
+      );
+      const listProps: ListProps[] = curPlacesData.map((p) => getListProps(p));
+      setPlaces(listProps);
+      dispatch(searchSlice.actions.resetCurrentPlaces());
+    } catch (error) {
+      console.error("Error current places data", error);
+    }
+  };
 
   const getListProps = (place: PlaceResponse): ListProps => {
     const { xid, name, wikipedia, rate, preview, wikipedia_extracts } = place;
@@ -62,16 +60,18 @@ export default function PlacesList() {
       dispatch(searchSlice.actions.setOpenedPlace(wikipedia || ""));
     };
 
+    const modalData = {
+      id: xid,
+      title: name,
+      description: wikipedia_extracts?.text || "Описание отсутствует",
+      onClick: onClick,
+      link: wikipedia,
+      theme: getTheme(),
+      image: preview?.source || undefined,
+    };
+
     return {
-      modal: {
-        id: xid,
-        title: name,
-        description: wikipedia_extracts?.text || "Описание отсутствует",
-        onClick: onClick,
-        link: wikipedia,
-        theme: getTheme(),
-        image: preview?.source || undefined,
-      },
+      modal: modalData,
     };
   };
   return places && <List props={places} />;

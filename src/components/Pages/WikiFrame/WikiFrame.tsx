@@ -8,9 +8,7 @@ export default function WikiFrame() {
   const [link, setLink] = useState<string>("");
 
   useEffect(() => {
-    if (openedPlaceLink) {
-      setLink(openedPlaceLink);
-    }
+    openedPlaceLink && setLink(openedPlaceLink);
   }, [openedPlaceLink]);
 
   return <iframe className={style.sights__container} src={link}></iframe>;
