@@ -2,7 +2,6 @@ import ModalProps from "../../../utils/interfaces/ModalProps";
 import style from "./Modal.module.scss";
 
 export default function Modal({ props }: { props: ModalProps }) {
-  console.error(props);
   const {
     title,
     description,

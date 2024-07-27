@@ -40,7 +40,6 @@ export default function List({ props }: { props: ListProps[] }) {
     },
   }));
 
-  console.error("LALALAA", elementsWithColors);
   const isNewTheme = (curId: number) => {
     if (curId === 0) return true;
     const prevId: number = curId - 1;
