@@ -1,13 +1,18 @@
-import { useSelector } from "react-redux";
-import { memo, useCallback, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { Map as GisMap, Marker as GisMarker } from "@2gis/mapgl/types";
 
 import Marker, { CompanyData } from "./Marker";
 import style from "./MapPage.module.scss";
+import styleModal from "./MapPage.module.scss";
+
 import PlacesApi from "../../api/2GisPlacesApi";
 import { RootState } from "../../../redux/types";
 import { useMapContext } from "../../../context/MapContext";
 import { load } from "@2gis/mapgl";
+import Modal from "../../Elements/Modal/Modal";
+import ModalProps from "../../../utils/interfaces/ModalProps";
+import categoriesSlice from "../../../redux/slices/categoriesSlice";
 
 const MapContent = memo(() => {
   return <div id="map-container" className={style.map__content}></div>;
@@ -16,12 +21,14 @@ const MapContent = memo(() => {
 const MapPage = memo(() => {
   const { markersDataCache, setMarkersDataCache } = useMapContext();
   const { city, zoom } = useSelector((state: RootState) => state.map);
+  const dispatch = useDispatch();
   const { categoryToAdd, categoryToRemove } = useSelector(
     (state: RootState) => state.categories
   );
 
-  const mapRef = useRef<GisMap>();
+  const [openedModal, setOpenedModal] = useState<ModalProps | null>(null);
 
+  const mapRef = useRef<GisMap>();
   const api = new PlacesApi();
   const markerClass = new Marker();
   const API_KEY = import.meta.env.VITE_2GIS_KEY;
@@ -33,12 +40,15 @@ const MapPage = memo(() => {
     } else {
       setMapLocation();
     }
-    mapRef.current && resizeMap(mapRef.current);
+
+    dispatch(categoriesSlice.actions.resetSelectedCategories());
+    window.addEventListener("resize", () => {
+      mapRef.current && mapRef.current.invalidateSize();
+    });
   }, [city.lon]);
 
   const setMarkers = useCallback(async () => {
     if (!categoryToAdd) return;
-
     const markers = getMarkersFromCache(categoryToAdd.id);
 
     if (markers && markers.length) {
@@ -57,6 +67,8 @@ const MapPage = memo(() => {
         setMarkersToCache(categoryToAdd.id, markers);
       }
     }
+
+    dispatch(categoriesSlice.actions.resetCategoriesToAdd());
   }, [categoryToAdd]);
 
   useEffect(() => {
@@ -67,6 +79,8 @@ const MapPage = memo(() => {
     if (!categoryToRemove) return;
     const markers = getMarkersFromCache(categoryToRemove.id);
     markerClass.removeMarkers(markers!);
+
+    dispatch(categoriesSlice.actions.resetCategoriesToRemove());
   }, [categoryToRemove]);
 
   const initializeMap = async () => {
@@ -80,17 +94,6 @@ const MapPage = memo(() => {
       disablePitchByUserInteraction: true,
       trafficControl: false,
       floorControl: false,
-    });
-  };
-
-  const resizeMap = (map: GisMap) => {
-    map.getCanvas().style.width = map.getContainer().style.width = "100%";
-    map.getCanvas().style.height = map.getContainer().style.height = "100%";
-
-    map.invalidateSize();
-
-    window.addEventListener("resize", () => {
-      map.invalidateSize();
     });
   };
 
@@ -114,12 +117,27 @@ const MapPage = memo(() => {
   };
 
   const handleMarkerClick = (marker: CompanyData) => {
-    console.error(marker);
+    const modalProps: ModalProps = {
+      title: marker.name,
+      description: marker.description,
+      theme: marker.rubrics[0].name,
+      image: marker.external_content[0].main_photo_url,
+      opened: true,
+      onClick: () => {
+        setOpenedModal(null);
+      },
+    };
+
+    setOpenedModal(modalProps);
   };
 
   return (
     <div className={style.map__wrapper}>
       <MapContent />
+
+      <div className={styleModal.modal__wrapper}>
+        {openedModal && <Modal props={openedModal} />}
+      </div>
     </div>
   );
 });

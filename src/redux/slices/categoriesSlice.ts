@@ -27,6 +27,20 @@ const categoriesSlice = createSlice({
         ? (state.categoryToAdd = action.payload)
         : (state.categoryToRemove = action.payload);
     },
+
+    resetSelectedCategories: (state) => {
+      state.allCategories = state.allCategories.map((category) => {
+        return { ...category, isActive: false };
+      });
+    },
+
+    resetCategoriesToAdd: (state) => {
+      state.categoryToAdd = null;
+    },
+
+    resetCategoriesToRemove: (state) => {
+      state.categoryToRemove = null;
+    },
   },
 });
 
