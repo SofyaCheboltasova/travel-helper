@@ -28,8 +28,10 @@ const searchSlice = createSlice({
     setOpenedPlace(state, action: PayloadAction<string>) {
       state.openedPlaceLink = action.payload;
     },
+    resetCurrentPlaces(state) {
+      state.currentPlaces = undefined;
+    },
   },
 });
 
 export default searchSlice;
-

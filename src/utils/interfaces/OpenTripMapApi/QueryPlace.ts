@@ -11,7 +11,7 @@ interface PlaceResponse extends PlaceIdentifier {
   rate: "2" | "3" | "2h" | "3h";
   preview?: {
     height: number;
-    sources: string;
+    source: string;
     width: number;
   };
   wikipedia_extracts?: {
@@ -22,4 +22,3 @@ interface PlaceResponse extends PlaceIdentifier {
 }
 
 export type { PlaceResponse, PlaceIdentifier };
-

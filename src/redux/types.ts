@@ -5,7 +5,7 @@ import store from "./store";
 
 export interface SearchState {
   allPlaces: PlaceIdentifier[];
-  currentPlaces: PlaceIdentifier[];
+  currentPlaces: PlaceIdentifier[] | undefined;
   openedPlaceLink: string;
   currentPage: number;
   itemsPerPage: number;
@@ -22,4 +22,3 @@ export interface MapState {
 }
 
 export type RootState = ReturnType<typeof store.getState>;
-
