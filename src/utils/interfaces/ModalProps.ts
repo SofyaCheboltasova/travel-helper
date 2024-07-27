@@ -1,6 +1,6 @@
 interface ModalProps {
   title: string;
-  description: string;
+  description?: string;
   theme: string;
   onClick?: (link: string) => void;
   id?: string;

@@ -27,7 +27,7 @@ export default class OpenTripMapApi {
       lon: 0,
       lat: 0,
       format: "json",
-      src_attr: "wikidata" && "osm",
+      src_attr: "wikidata",
       rate: "3" && "3h" && "2h" && "2",
       limit: 10,
     };
@@ -60,7 +60,6 @@ export default class OpenTripMapApi {
       if (!data) {
         throw new Error(`Error fetching data from ${this.url}/${endpoint}`);
       }
-
       return data;
     } catch (error) {
       console.error(error);
@@ -70,7 +69,7 @@ export default class OpenTripMapApi {
   public async getAllPlaces(
     coords: Coordinates,
     radius?: number
-  ): Promise<PlaceIdentifier[] | undefined> {
+  ): Promise<PlaceIdentifier[] | []> {
     const params = {
       ...this.radiusParams,
       lat: coords.lat,
@@ -83,7 +82,7 @@ export default class OpenTripMapApi {
     >("radius", params);
 
     const sortedPlaces = this.sortByPopularity(placesInRadius);
-    return sortedPlaces;
+    return sortedPlaces || [];
   }
 
   private async getPlaceData(xid: string): Promise<PlaceResponse | undefined> {
@@ -101,9 +100,6 @@ export default class OpenTripMapApi {
       .filter((data) => data.status === "fulfilled")
       .map((data) => data.value)
       .filter((data) => data !== undefined);
-
-    console.error("LALALALALALA");
-
     return placesData;
   }
 

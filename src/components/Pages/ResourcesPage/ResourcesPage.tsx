@@ -56,7 +56,7 @@ export default function ResourcesPage() {
       const { title, description, theme } = data.modal;
       const isInputMatch = isSubstrInTexts(searchInput, [
         title,
-        description,
+        description!,
         theme,
       ]);
 
