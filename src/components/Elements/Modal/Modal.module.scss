@@ -17,19 +17,18 @@
   }
 }
 
-.modal__wrapper {
+.modal__content {
   @extend %rectangle-default;
   @include size(100%, 100%);
   @include flex(column, 1rem, space-between);
 
   transition: $transition-transform;
-
+  background-color: $color-main;
   border-color: var(--label-bg-color);
 
   &:hover,
   &:focus-visible {
     transform: $transform-scale-hover;
-
     box-shadow: 4px 8px 20px 3px var(--label-bg-color) / 50%;
 
     .modal__label::before {
@@ -66,5 +65,27 @@
     left: 50%;
     background-color: var(--label-bg-color, $color-font-dark);
   }
+}
+
+.wrapper_opened {
+  @include size(100%, 100%);
+  @include flex($justify-content: center, $align-items: center);
+
+  cursor: pointer;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* затемнение заднего фона */
+  z-index: 1000;
+}
+
+.content_opened {
+  @include size(30vw, 70vh);
+  @include flex(column, 1rem, start, $text-align: center);
+}
+
+.modal__img {
+  @include size($h: 70%);
+  object-fit: cover;
 }
 

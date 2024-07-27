@@ -6,13 +6,11 @@ import resources from "../../../assets/json/resources.json";
 import TelegramApi from "../../api/TelegramApi";
 import Header from "../../Elements/Header/Header";
 import SearchBar from "../../Elements/SearchBar/SearchBar";
-import ModalProps from "../../../utils/interfaces/ModalProps";
-import List from "../../Elements/List/List";
+import List, { ListProps } from "../../Elements/List/List";
 import Loader from "../../Elements/Loader/Loader";
-import ChannelData from "../../../utils/interfaces/TelegramApi/ChannelData";
 
 export default function ResourcesPage() {
-  const [channelsData, setChannelsData] = useState<ModalProps[]>([]);
+  const [channelsData, setChannelsData] = useState<ListProps[]>([]);
   const [searchInput, setSearchInput] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -25,16 +23,19 @@ export default function ResourcesPage() {
         const channelsData = await Promise.all(
           resources.map((resource) => api.getChannelData(resource))
         );
-        const enhancedChannelsData: ModalProps[] = channelsData
-          .filter((data): data is ChannelData => !!data?.id)
-          .map((channel) => ({
-            ...channel,
-            onClick: (link: string) => {
-              window.open(link, "_blank");
-            },
-          }));
 
-        setChannelsData(enhancedChannelsData);
+        const channelsDataFiltered = channelsData.filter(
+          (channelData) => channelData !== undefined
+        );
+        const channelsListProps = channelsDataFiltered.map((channelData) => {
+          return {
+            modal: {
+              ...channelData,
+              onClick: (link: string) => window.open(link, "_blank"),
+            },
+          };
+        });
+        setChannelsData(channelsListProps);
       } catch (error) {
         console.error("Error fetching channel data");
       } finally {
@@ -48,18 +49,18 @@ export default function ResourcesPage() {
   }, []);
 
   useEffect(() => {
-    const hiddenData = channelsData.map((data) => {
+    const hiddenData: ListProps[] = channelsData.map((data) => {
       const isInputEmpty = searchInput.trim() === "";
       if (isInputEmpty) return { ...data, hidden: false };
 
-      const { title, description, theme } = data;
+      const { title, description, theme } = data.modal;
       const isInputMatch = isSubstrInTexts(searchInput, [
         title,
         description,
         theme,
       ]);
 
-      return { ...data, hidden: !isInputMatch };
+      return { modal: { ...data.modal }, hidden: !isInputMatch };
     });
 
     setChannelsData(hiddenData);
@@ -89,7 +90,7 @@ export default function ResourcesPage() {
         borders={true}
         children={<SearchBar onChange={handleSearchInput} />}
       />
-      <List elements={channelsData} />
+      <List props={channelsData} />
     </div>
   );
 }

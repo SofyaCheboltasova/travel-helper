@@ -83,7 +83,7 @@ export default class PlacesApi {
             rubric_id: category.rubricId,
             point: `${city.lon}, ${city.lat}`,
             fields:
-              "items.point,items.full_address_name,items.description,items.external_content",
+              "items.point,items.full_address_name,items.description,items.external_content,items.rubrics",
             radius: this.radius,
             key: this.API_KEY,
           },

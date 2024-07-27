@@ -1,8 +1,18 @@
 import ModalProps from "../../../utils/interfaces/ModalProps";
 import style from "./Modal.module.scss";
 
-export default function Modal({ data }: { data: ModalProps }) {
-  const { title, theme, link = "", description, onClick, color } = data;
+export default function Modal({ props }: { props: ModalProps }) {
+  console.error(props);
+  const {
+    title,
+    description,
+    theme,
+    onClick,
+    link = "",
+    color,
+    image,
+    opened,
+  } = props;
 
   const labelStyle = {
     "--label-bg-color": color,
@@ -10,19 +20,23 @@ export default function Modal({ data }: { data: ModalProps }) {
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    onClick(link);
+    if (onClick) onClick(link);
   };
 
   return (
-    <div
-      className={style.modal__wrapper}
-      onClick={handleClick}
-      style={labelStyle}
-    >
-      <h2 className={style.modal__header}>{title}</h2>
-      <p className={style.modal__description}>{description}</p>
-      <div className={style.modal__label} style={labelStyle}>
-        {theme}
+    <div className={`${opened && style.wrapper_opened}`} onClick={handleClick}>
+      <div
+        className={`${style.modal__content} ${opened && style.content_opened}`}
+        style={labelStyle}
+      >
+        {image && <img src={image} className={style.modal__img} />}
+        <h2 className={style.modal__header}>{title}</h2>
+        {description && (
+          <p className={style.modal__description}>{description}</p>
+        )}
+        <div className={style.modal__label} style={labelStyle}>
+          {theme}
+        </div>
       </div>
     </div>
   );
