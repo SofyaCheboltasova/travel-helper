@@ -1,7 +1,6 @@
 $color-main: #ffffff;
-// $color-secondary: #006e0c;
 $color-gradient: linear-gradient(to bottom, white, rgba(255, 255, 255, 0));
-$color-secondary: #003366;
+$color-secondary: #1a2a00;
 $color-button-hover: #eeeeee;
 
 $box-shadow-default: 4px 8px 20px 3px rgb(13 13 13 / 22%);
@@ -10,7 +9,7 @@ $box-border-hover: 1px solid $color-secondary;
 $box-radius: 16px;
 
 $font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-$color-font-dark: #003366;
+$color-font-dark: #1a2a00;
 $color-font-light: $color-main;
 $font-main-medium: 500 1em $font-family;
 $font-main-regular: 400 1em $font-family;

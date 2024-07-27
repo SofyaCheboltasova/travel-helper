@@ -119,7 +119,6 @@ const MapPage = memo(() => {
   const handleMarkerClick = (marker: CompanyData) => {
     const modalProps: ModalProps = {
       title: marker.name,
-      description: marker.description,
       theme: marker.rubrics[0].name,
       image: marker.external_content[0].main_photo_url,
       opened: true,
