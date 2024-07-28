@@ -9,11 +9,11 @@ import foodIcon from "../images/icons/Food.svg";
 export const pages = {
   home: {
     path: "/",
-    name: "home",
+    name: "Главная",
   },
   newRoute: {
     path: "/routes",
-    name: "Маршруты",
+    name: "Карта",
   },
   savedRoutes: { path: "/sights", name: "Достопримечательности" },
   tickets: { path: "/resources", name: "Ресурсы для путешественников" },

@@ -46,6 +46,10 @@ export default function Nav() {
   return (
     <nav className={style.nav}>
       <Button
+        text={pages.home.name}
+        onClick={() => navigate(pages.home.path)}
+      ></Button>
+      <Button
         text={pages.newRoute.name}
         onClick={() => {
           handleClick(

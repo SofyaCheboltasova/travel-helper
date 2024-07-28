@@ -1,0 +1,40 @@
+@import "../../../assets/styles/placeholders.module.scss";
+@import "../../../assets/styles/mixins.module.scss";
+
+.page__wrapper {
+  color: #1a2a00;
+  margin: 20px;
+
+  @extend %scroll;
+}
+
+.title {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.taskList {
+  padding-left: 1rem;
+  @include flex(column, 1rem);
+}
+
+.ul_outer {
+  li {
+    list-style-type: disc;
+  }
+}
+
+.ul_inner {
+  padding-left: 1.5rem;
+
+  li {
+    list-style-type: circle;
+  }
+}
+
+code {
+  background-color: #f4f4f4;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+

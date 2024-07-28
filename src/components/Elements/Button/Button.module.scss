@@ -4,6 +4,7 @@
 .button {
   @extend %rectangle-default;
   font: $font-main-medium;
+  text-align: left;
 
   &:hover,
   &:focus-visible {

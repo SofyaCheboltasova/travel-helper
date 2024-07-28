@@ -1,30 +1,47 @@
-# React + TypeScript + Vite
+# Travel Helper App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Основной функционал
 
-Currently, two official plugins are available:
+- Интерактивная карта с использованием 2GIS API
+- Поиск и отображение интересных мест с помощью OpenTripMap API
+- Фильтрация ресурсов по поисковому запросу
+- Модальные окна с информацией о местах (название, описание из Wikipedia, тема, ссылка)
+- Категории интересных мест для отображения на карте
+- Кэширование запрошенных маркеров для оптимизации производительности
+- Интеграция с Telegram API для получения информации о каналах
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Наиболее сложные задачи
 
-## Expanding the ESLint configuration
+1. Интеграция и управление несколькими API (2GIS, OpenTripMap, Telegram)
+2. Динамическое добавление и удаление маркеров с карты
+3. Обеспечение обмена данными между компонентами
+4. Фильтрация и категоризация интересных мест
+5. Реализация системы кэширования для оптимизации запросов к API
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Технологический стек
 
-- Configure the top-level `parserOptions` property like this:
+- Frontend:
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+  - React
+  - TypeScript
+  - Redux
+  - SCSS
+  - React Router
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+- APIs:
+  - 2GIS API
+  - OpenTripMap API
+  - Telegram API
+
+## Установка и запуск
+
+1. Клонируйте репозиторий
+2. Установите зависимости: `npm install`
+3. Создайте файл `.env` и добавьте необходимые API ключи
+4. Запустите приложение: `npm start`
+
+## Разработка
+
+Основной фокус был сделан на знакомство с React: хуки, управление состоянием с помощью Redux и маршрутизация.
+Работа с несколькими API: обработка асинхронных запросов, интеграция внешних данных в приложение и работа с документацией. Дополнительно, часть статических данных кэшировалась для ускорения загрузки.
+
