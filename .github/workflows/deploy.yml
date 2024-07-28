@@ -3,7 +3,7 @@ name: Deploy Travel Helper
 on:
   push:
     branches:
-      - gh-pages 
+      - main
 
 jobs:
   deploy:
@@ -36,3 +36,4 @@ jobs:
         with:
           github_token: ${{ secrets.DEPLOY_TOKEN }}
           publish_dir: ./dist
+          publish_branch: gh-pages
