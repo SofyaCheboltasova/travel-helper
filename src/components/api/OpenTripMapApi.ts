@@ -21,7 +21,7 @@ export default class OpenTripMapApi {
   private url: string = `http://api.opentripmap.com/0.1/${this.lang}/places`;
 
   constructor() {
-    this.apiKey = import.meta.env.VITE_OPENTRIP_KEY;
+    this.apiKey = import.meta.env.VITE_OPENTRIPMAP_TOKEN;
     this.radiusParams = {
       radius: 10000,
       lon: 0,
@@ -117,4 +117,3 @@ export default class OpenTripMapApi {
       : undefined;
   }
 }
-

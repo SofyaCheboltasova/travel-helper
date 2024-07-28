@@ -31,7 +31,7 @@ const MapPage = () => {
   const mapRef = useRef<GisMap>();
   const api = new PlacesApi();
   const markerClass = new Marker();
-  const API_KEY = import.meta.env.VITE_2GIS_KEY;
+  const API_KEY = import.meta.env.VITE_2GIS_TOKEN;
   const MAP_STYLE_ID = "1b42a0a1-e85f-45c2-8d7b-693baf76490f";
 
   useEffect(() => {
@@ -137,4 +137,3 @@ const MapPage = () => {
 };
 
 export default MapPage;
-

@@ -4,7 +4,7 @@ import Category from "../../utils/interfaces/Category";
 import { CityIdentifier } from "../../utils/interfaces/OpenTripMapApi/QueryCity";
 
 export default class PlacesApi {
-  private API_KEY: string = import.meta.env.VITE_2GIS_KEY;
+  private API_KEY: string = import.meta.env.VITE_2GIS_TOKEN;
   private radius: number = 10000;
 
   public async getCompaniesData(city: CityIdentifier, category: Category) {
@@ -30,4 +30,3 @@ export default class PlacesApi {
     }
   }
 }
-
