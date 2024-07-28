@@ -3,7 +3,7 @@ name: Deploy Travel Helper
 on:
   push:
     branches:
-      - gh-pages
+      - gh-pages 
 
 jobs:
   deploy:
