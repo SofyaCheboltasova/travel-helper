@@ -21,9 +21,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Debug environment variables
-        run: echo "TELEGRAM_TOKEN=${{ secrets.VITE_TELEGRAM_TOKEN }} 2GIS_TOKEN=${{ secrets.VITE_2GIS_TOKEN }} OPENTRIPMAP_TOKEN=${{ secrets.VITE_OPENTRIPMAP_TOKEN }}"
-
       - name: Build project
         env:
           VITE_TELEGRAM_TOKEN: ${{ secrets.VITE_TELEGRAM_TOKEN }}
