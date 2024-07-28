@@ -6,5 +6,5 @@ dotenv.config();
 
 export default defineConfig({
   plugins: [react()],
+  base: "travel-helper",
 });
-
