@@ -8,7 +8,7 @@ import foodIcon from "../images/icons/Food.svg";
 
 export const pages = {
   home: {
-    path: "/",
+    path: "/home",
     name: "Главная",
   },
   newRoute: {
@@ -56,4 +56,3 @@ export const categories = [
     rubricId: "165", // Быстрое питание
   },
 ];
-
