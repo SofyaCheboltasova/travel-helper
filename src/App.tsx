@@ -12,8 +12,21 @@ import WikiFrame from "./components/Pages/WikiFrame/WikiFrame";
 import MapComponent from "./components/Pages/MapPage/MapPage";
 import WelcomePage from "./components/Pages/WelcomePage/WelcomePage";
 import ResourcesPage from "./components/Pages/ResourcesPage/ResourcesPage";
+import { useEffect } from "react";
 
 function App() {
+  useEffect(() => {
+    const apiKeys = [
+      "VITE_TELEGRAM_TOKEN",
+      "VITE_2GIS_TOKEN",
+      "VITE_OPENTRIPMAP_TOKEN",
+    ];
+
+    apiKeys.forEach(
+      (key) => !import.meta.env[key] && console.error("API key is unset: ", key)
+    );
+  }, []);
+
   return (
     <Provider store={store}>
       <Router>
@@ -48,4 +61,3 @@ function App() {
 }
 
 export default App;
-
