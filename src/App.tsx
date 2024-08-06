@@ -22,9 +22,11 @@ function App() {
       "VITE_OPENTRIPMAP_TOKEN",
     ];
 
-    apiKeys.forEach(
-      (key) => !import.meta.env[key] && console.error("API key is unset: ", key)
-    );
+    apiKeys.forEach((key) => {
+      if (import.meta.env[key] === "") {
+        console.error("API key is unset: ", key);
+      }
+    });
   }, []);
 
   return (
